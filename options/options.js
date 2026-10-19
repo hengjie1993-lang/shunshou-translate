@@ -1,5 +1,5 @@
 import { LANGUAGES } from '../lib/translator.js';
-import { PROVIDER_PRESETS, makeProvider, usableProviders } from '../lib/providers.js';
+import { makeProvider, usableProviders } from '../lib/providers.js';
 import { DEFAULT_SETTINGS, loadSettings, saveSettings } from '../lib/settings.js';
 import { orderBySpeed, describeStat } from '../lib/stats.js';
 import { localLang, pickLocalSourceLang } from '../lib/freeEngines.js';
@@ -18,7 +18,6 @@ const els = {
   staleRun: document.getElementById('staleRun'),
   staleOpen: document.getElementById('staleOpen'),
   staleCopy: document.getElementById('staleCopy'),
-  presets: document.getElementById('presets'),
   providers: document.getElementById('providers'),
   addCustom: document.getElementById('addCustom'),
   smartBox: document.getElementById('smartBox'),
@@ -110,30 +109,7 @@ function renderLanguages(selected) {
   }
 }
 
-function renderPresets() {
-  const used = new Set((state.providers || []).map((p) => p.name));
-  els.presets.innerHTML = '';
-
-  for (const preset of PROVIDER_PRESETS) {
-    if (preset.preset === 'custom') continue;
-    const added = used.has(preset.name);
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'preset' + (added ? ' preset--added' : '');
-    btn.dataset.preset = preset.preset;
-    btn.disabled = added;
-    btn.innerHTML =
-      `<span class="preset__name">${esc(preset.name)}</span>` +
-      `<span class="preset__note">${esc(added ? '已添加' : preset.note)}</span>`;
-
-    els.presets.appendChild(btn);
-  }
-}
-
 function providerHTML(p, index, total, rankMap) {
-  const preset = PROVIDER_PRESETS.find((x) => x.name === p.name);
-  const signup = preset && preset.signup ? preset.signup : '';
   const off = p.enabled === false;
   const usable = !off && p.apiKey && p.endpoint && p.model;
 
@@ -155,7 +131,7 @@ function providerHTML(p, index, total, rankMap) {
     `<div class="provider${index === 0 ? ' provider--primary' : ''}${off ? ' provider--off' : ''}" data-id="${esc(p.id)}">` +
       '<div class="provider__head">' +
         `<span class="provider__index">${index + 1}</span>` +
-        `<input class="provider__name" type="text" data-field="name" value="${esc(p.name)}" spellcheck="false" />` +
+        `<input class="provider__name" type="text" data-field="name" value="${esc(p.name)}" placeholder="服务名称（随便起）" spellcheck="false" />` +
         chips +
         '<div class="provider__ops">' +
           '<label class="switch switch--sm" title="启用 / 停用">' +
@@ -177,18 +153,15 @@ function providerHTML(p, index, total, rankMap) {
         '</div>' +
         '<div>' +
           '<label class="field__label">接口地址</label>' +
-          `<input class="field__control" type="text" data-field="endpoint" value="${esc(p.endpoint)}" spellcheck="false" />` +
+          `<input class="field__control" type="text" data-field="endpoint" value="${esc(p.endpoint)}" placeholder="https://…/v1/chat/completions" spellcheck="false" />` +
         '</div>' +
         '<div>' +
           '<label class="field__label">模型</label>' +
-          `<input class="field__control" type="text" data-field="model" value="${esc(p.model)}" spellcheck="false" />` +
+          `<input class="field__control" type="text" data-field="model" value="${esc(p.model)}" placeholder="模型名，例如 gpt-4o-mini" spellcheck="false" />` +
         '</div>' +
       '</div>' +
       '<div class="provider__foot">' +
         `<button class="btn" data-act="test" type="button">测试连接</button>` +
-        (signup
-          ? `<button class="btn" data-act="signup" data-url="${esc(signup)}" type="button">获取免费 Key</button>`
-          : '') +
         '<span class="provider__result"></span>' +
       '</div>' +
     '</div>'
@@ -210,7 +183,7 @@ function renderProviders() {
 
   if (!list.length) {
     els.providers.innerHTML =
-      '<div class="providers__empty">还没有添加任何翻译服务，从上面的「快速添加」挑一家吧</div>';
+      '<div class="providers__empty">还没有添加服务。任何兼容 OpenAI 协议的服务都能接 —— 填接口地址、模型名和 Key 就行。</div>';
     return;
   }
 
@@ -229,7 +202,9 @@ function renderSmartBox() {
   const usable = usableProviders(state.providers);
 
   if (!usable.length) {
-    els.smartDesc.textContent = '还没填 AI 服务商 —— 免费引擎已经够用，想加再往下加';
+    els.smartDesc.textContent = (state.providers || []).length
+      ? '填好 Key 并测试通过后，这里会自动按实测速度排序'
+      : '还没添加 AI 服务商 —— 免费引擎已经够用，想加再往下加';
     return;
   }
 
@@ -336,7 +311,6 @@ function renderForm() {
 }
 
 function renderAll() {
-  renderPresets();
   renderProviders();
   renderSmartBox();
   renderBanner();
@@ -372,7 +346,6 @@ function findProvider(id) {
 }
 
 async function commitProviders() {
-  renderPresets();
   renderSmartBox();
   renderBanner();
   await persist({ providers: state.providers });
@@ -382,17 +355,8 @@ const saveProvidersSoon = debounce(() => {
   persist({ providers: state.providers });
 }, 500);
 
-els.presets.addEventListener('click', async (e) => {
-  const btn = e.target.closest('.preset');
-  if (!btn || btn.disabled) return;
-
-  state.providers.push(makeProvider(btn.dataset.preset));
-  renderProviders();
-  await commitProviders();
-});
-
 els.addCustom.addEventListener('click', async () => {
-  state.providers.push(makeProvider('custom', { name: '自定义服务' }));
+  state.providers.push(makeProvider());
   renderProviders();
   await commitProviders();
 });
@@ -471,12 +435,6 @@ els.providers.addEventListener('click', async (e) => {
     state.providers.splice(index + 1, 0, item);
     renderProviders();
     await commitProviders();
-    return;
-  }
-
-  if (act === 'signup') {
-    const url = btn.dataset.url;
-    if (url) chrome.tabs.create({ url });
     return;
   }
 

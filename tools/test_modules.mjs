@@ -6,11 +6,12 @@
  */
 
 import { RETRY, translate, redactSecrets } from '../lib/translator.js';
+import * as providersModule from '../lib/providers.js';
 import {
   translateWithFailover,
   usableProviders,
   benchmarkProviders,
-  PROVIDER_PRESETS
+  makeProvider
 } from '../lib/providers.js';
 import { getCached, setCached, clearCache, cacheStats } from '../lib/cache.js';
 import {
@@ -514,36 +515,24 @@ ok(
   describeStat(mStatFixed)
 );
 
-/* ----------------------------- 10. 预设精简 ----------------------------- */
+/* ----------------------------- 10. 不内置任何供应商 ----------------------------- */
 
-console.log('\n=== 10. 预设列表只留「验证过能用」的 ===');
+console.log('\n=== 10. 不内置任何供应商 ===');
 
-const presetIds = PROVIDER_PRESETS.map((p) => p.preset);
-ok('预设共 4 个（含自定义）', PROVIDER_PRESETS.length === 4, presetIds);
-ok('包含智谱 GLM 免费模型', presetIds.includes('zhipu'), presetIds);
-ok(
-  '智谱预设指向实测稳定的 glm-4-flash 且走 OpenAI 兼容端点',
-  (() => {
-    const z = PROVIDER_PRESETS.find((p) => p.preset === 'zhipu');
-    return z && z.model === 'glm-4-flash' && z.endpoint === 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-  })(),
-  PROVIDER_PRESETS.find((p) => p.preset === 'zhipu')
-);
-// 2026-10-14：这些入口要么实测不可用，要么从未被使用过，一并删掉
-for (const gone of ['openrouter', 'siliconflow', 'deepseek', 'gemini', 'cerebras']) {
-  ok(`已移除不可用/未使用的「${gone}」入口`, !presetIds.includes(gone), presetIds);
-}
-ok(
-  '只保留实测跑通的三家 AI 服务商',
-  ['groq', 'zhipu', 'agnes'].every((id) => presetIds.includes(id)),
-  presetIds
-);
-ok('保留了自定义服务入口', presetIds.includes('custom'), presetIds);
-ok(
-  '每个预设都有 endpoint 与 model（自定义除外）',
-  PROVIDER_PRESETS.filter((p) => p.preset !== 'custom').every((p) => p.endpoint && p.model),
-  PROVIDER_PRESETS.map((p) => `${p.preset}:${p.model}`)
-);
+// 曾经的「快速添加」（Groq / 智谱 / Agnes）已经整排删掉。
+// 预设等于替用户挑供应商，开源版本里还容易被读成夹带推广 —— 现在只给一张空表单。
+ok('providers.js 不再导出预设表', !('PROVIDER_PRESETS' in providersModule), Object.keys(providersModule));
+ok('providers.js 不再导出 findPreset', !('findPreset' in providersModule), Object.keys(providersModule));
+
+const blank = makeProvider();
+ok('新建服务商是空白卡片（不预填任何厂商）', blank.name === '' && blank.endpoint === '' && blank.model === '', blank);
+ok('空白卡片默认启用', blank.enabled === true, blank);
+ok('空白卡片有独立 id', typeof blank.id === 'string' && blank.id.length > 0, blank.id);
+ok('两次新建的 id 不同', makeProvider().id !== makeProvider().id);
+ok('空白卡片因为没填 Key 而不可用', usableProviders([blank]).length === 0, usableProviders([blank]));
+
+const overridden = makeProvider({ name: '我的服务' });
+ok('可以用 overrides 覆盖字段', overridden.name === '我的服务' && overridden.endpoint === '', overridden);
 
 /* ----------------------------- 11. 粘贴卫生（首尾空白） ----------------------------- */
 

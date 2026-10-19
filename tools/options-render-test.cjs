@@ -148,7 +148,6 @@ function serve(root) {
   await page.waitForTimeout(600);
 
   const result = await page.evaluate(() => {
-    const presets = [...document.querySelectorAll('#presets .preset')].map(b => b.textContent.trim());
     const cards = [...document.querySelectorAll('#providers .provider')];
     const cardInfo = cards.map(c => ({
       name: c.querySelector('.provider__name')?.value,
@@ -164,8 +163,10 @@ function serve(root) {
       hasSignup: !!c.querySelector('[data-act="signup"]')
     }));
     return {
-      presetCount: presets.length,
-      presets,
+      hasPresetRow: !!document.getElementById('presets'),
+      hasPresetCss: [...document.styleSheets].some((sh) => {
+        try { return [...sh.cssRules].some((r) => /\.preset/.test(r.selectorText || '')); } catch (_) { return false; }
+      }),
       cardCount: cards.length,
       cardInfo,
       cacheStat: document.getElementById('cacheStat')?.textContent.trim(),
@@ -196,9 +197,9 @@ function serve(root) {
     };
   });
 
-  console.log('预设按钮数:', result.presetCount, '→', result.presets.join(', '));
+  console.log('快速添加区块:', result.hasPresetRow ? '仍存在 ✗' : '已删除 ✓', '| 残留 .preset 样式:', result.hasPresetCss ? '有 ✗' : '无 ✓');
   console.log('服务卡片数:', result.cardCount);
-  result.cardInfo.forEach((c, i) => console.log(`  卡片${i + 1}: ${c.name} | 模型:${c.model} | 速度:${c.speed} | ${c.rank || '（不可用）'} | key输入:${c.hasKeyInput} 测试:${c.hasTestBtn} 申请入口:${c.hasSignup} 上移:${c.hasUp} 下移:${c.hasDown} 删除:${c.hasDel}`));
+  result.cardInfo.forEach((c, i) => console.log(`  卡片${i + 1}: ${c.name} | 模型:${c.model} | 速度:${c.speed} | ${c.rank || '（不可用）'} | key输入:${c.hasKeyInput} 测试:${c.hasTestBtn} 上移:${c.hasUp} 下移:${c.hasDown} 删除:${c.hasDel}`));
   console.log('缓存统计:', result.cacheStat);
   console.log('目标语言选项数:', result.targetLangOptions);
   console.log('智能模式说明:', result.smartDesc);
@@ -206,12 +207,13 @@ function serve(root) {
   console.log('手动测速按钮:', result.hasBenchmarkBtn ? '仍存在 ✗' : '已移除 ✓', '| 智能开关:', result.hasSmartToggle ? '仍存在 ✗' : '已移除 ✓', '| 自定义入口:', result.hasCustomBtn ? '在 ✓' : '缺失 ✗', '| 重新学习入口:', result.resetLinkText);
 
   const problems = [];
-  // 精简后：只剩实测跑通的 3 家（Groq / 智谱 GLM / Agnes AI）+ 1 个独立的自定义入口
-  if (result.presetCount !== 3) problems.push('快速添加预设应为 3 个（只留实测可用的），实际: ' + result.presetCount);
-  if (!result.hasCustomBtn) problems.push('应保留独立的「自定义服务」入口');
-  if (!result.presets.some((p) => /智谱|GLM/.test(p))) problems.push('预设里应有智谱 GLM');
-  for (const gone of ['OpenRouter', 'Gemini', 'Cerebras', '硅基流动', 'DeepSeek']) {
-    if (result.presets.some((p) => p.includes(gone))) problems.push(`预设里不应再有 ${gone}（实测不可用或从未使用，已删）`);
+  // 「快速添加」整排已删：预设等于替用户挑供应商，开源版本里容易被读成夹带推广。
+  // 现在只有一张空表单 + 一个「添加服务」按钮。
+  if (result.hasPresetRow) problems.push('「快速添加」区块应已删除，页面上不该再有 #presets');
+  if (result.hasPresetCss) problems.push('样式表里仍残留 .preset 规则（死代码）');
+  if (!result.hasCustomBtn) problems.push('应保留「添加服务」入口');
+  for (const c of result.cardInfo) {
+    if (c.hasSignup) problems.push(`服务商卡片不该再出现「获取免费 Key」跳转（${c.name}）`);
   }
   if (result.cardCount !== 4) problems.push('服务卡片数应为 4');
 

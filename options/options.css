@@ -553,65 +553,6 @@ textarea.field__control {
   text-align: right;
 }
 
-/* ------------------------------ 预设按钮 ------------------------------ */
-
-.presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.preset {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 9px 13px;
-  border: 1px solid transparent;
-  border-radius: var(--r-sm);
-  background: var(--btn-bg);
-  cursor: pointer;
-  font-family: inherit;
-  text-align: left;
-  transition: background 0.15s ease, border-color 0.15s ease,
-    transform 0.12s ease;
-}
-
-.preset:hover {
-  background: var(--blue-soft);
-  border-color: var(--blue-border);
-}
-
-.preset:hover .preset__name {
-  color: var(--blue);
-}
-
-.preset--added {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.preset--added:hover {
-  background: var(--btn-bg);
-  border-color: transparent;
-}
-
-.preset--added:hover .preset__name {
-  color: var(--text);
-}
-
-.preset__name {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.preset__note {
-  font-size: 11.5px;
-  color: var(--text-faint);
-}
-
 /* ------------------------------ 服务商卡片 ------------------------------ */
 
 .providers {
@@ -920,7 +861,6 @@ textarea.field__control {
 
 /* 键盘可达性：只在键盘 Tab 到的时候出现，不干扰鼠标用户 */
 .btn:focus-visible,
-.preset:focus-visible,
 .field__control:focus-visible,
 .provider__name:focus-visible,
 .smart__reset:focus-visible {
@@ -929,7 +869,6 @@ textarea.field__control {
 }
 
 .btn,
-.preset,
 .provider,
 .provider__name,
 .field__control {
@@ -942,8 +881,7 @@ textarea.field__control {
   border-color: var(--border);
 }
 
-.btn:active:not(:disabled),
-.preset:active:not(.preset--added) {
+.btn:active:not(:disabled) {
   transform: translateY(0.5px);
 }
 
