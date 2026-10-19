@@ -124,7 +124,7 @@ const log = (...a) => console.log(...a);
     for (const sheet of document.styleSheets) {
       try {
         for (const rule of sheet.cssRules) {
-          if (rule.cssText && rule.cssText.indexOf('agnes-toast') !== -1) return true;
+          if (rule.cssText && rule.cssText.indexOf('sst-toast') !== -1) return true;
         }
       } catch (e) { /* 跨域样式表 */ }
     }
@@ -155,7 +155,7 @@ const log = (...a) => console.log(...a);
   log('input 结果:', JSON.stringify(v1));
 
   const toast = await page.evaluate(() => {
-    const el = document.querySelector('.agnes-toast');
+    const el = document.querySelector('.sst-toast');
     return el ? el.textContent : null;
   });
   log('toast:', JSON.stringify(toast));
@@ -186,7 +186,7 @@ const log = (...a) => console.log(...a);
   await page.waitForTimeout(8000);
   log('contenteditable 结果:', JSON.stringify(await ed.innerText()));
 
-  await page.screenshot({ path: path.join(require('os').tmpdir(), 'agnes-e2e.png') });
+  await page.screenshot({ path: path.join(require('os').tmpdir(), 'shunshou-e2e.png') });
   log('截图已保存');
 
   await ctx.close();

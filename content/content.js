@@ -12,8 +12,8 @@
   'use strict';
 
   // 防止重复注入（声明式注入 + 后台补注入可能同时发生，重复注册会导致计数翻倍）
-  if (window.__agnesTranslatorLoaded) return;
-  window.__agnesTranslatorLoaded = true;
+  if (window.__shunshouTranslateLoaded) return;
+  window.__shunshouTranslateLoaded = true;
 
   const DEFAULTS = {
     enabled: true,
@@ -175,21 +175,21 @@
     removeToast();
 
     const node = document.createElement('div');
-    node.className = 'agnes-toast agnes-toast--' + kind;
+    node.className = 'sst-toast sst-toast--' + kind;
 
     const label = document.createElement('span');
-    label.className = 'agnes-toast__label';
+    label.className = 'sst-toast__label';
     label.textContent = message;
     node.appendChild(label);
 
     if (kind === 'loading') {
       const spin = document.createElement('span');
-      spin.className = 'agnes-toast__spinner';
+      spin.className = 'sst-toast__spinner';
       node.appendChild(spin);
     }
 
     if (typeof onAction === 'function') {
-      node.classList.add('agnes-toast--clickable');
+      node.classList.add('sst-toast--clickable');
       node.addEventListener('mousedown', (e) => {
         e.preventDefault();
         e.stopPropagation();

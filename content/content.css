@@ -1,4 +1,4 @@
-.agnes-toast {
+.sst-toast {
   position: fixed;
   z-index: 2147483647;
   display: inline-flex;
@@ -20,54 +20,54 @@
   box-shadow: 0 3px 14px rgba(15, 23, 42, 0.14);
   pointer-events: none;
   opacity: 0;
-  animation: agnes-toast-in 0.14s ease-out forwards;
+  animation: sst-toast-in 0.14s ease-out forwards;
 }
 
-.agnes-toast__label {
+.sst-toast__label {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.agnes-toast--clickable {
+.sst-toast--clickable {
   pointer-events: auto;
   cursor: pointer;
 }
 
-.agnes-toast--loading {
+.sst-toast--loading {
   background: #fdf6e3;
   border-color: #e8d9a8;
   color: #7a5c12;
 }
 
-.agnes-toast--success {
+.sst-toast--success {
   background: #edf7ed;
   border-color: #b7ddb7;
   color: #1f6b33;
 }
 
-.agnes-toast--error {
+.sst-toast--error {
   background: #fdeeee;
   border-color: #f0bcbc;
   color: #a32626;
 }
 
-.agnes-toast__spinner {
+.sst-toast__spinner {
   flex: 0 0 auto;
   width: 11px;
   height: 11px;
   border-radius: 50%;
   border: 1.5px solid rgba(122, 92, 18, 0.25);
   border-top-color: #b8860b;
-  animation: agnes-toast-spin 0.7s linear infinite;
+  animation: sst-toast-spin 0.7s linear infinite;
 }
 
-@keyframes agnes-toast-spin {
+@keyframes sst-toast-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes agnes-toast-in {
+@keyframes sst-toast-in {
   from {
     opacity: 0;
     transform: translateY(-3px);
@@ -79,11 +79,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .agnes-toast {
+  .sst-toast {
     animation: none;
     opacity: 1;
   }
-  .agnes-toast__spinner {
+  .sst-toast__spinner {
     animation: none;
   }
 }
@@ -94,29 +94,29 @@
    反过来深色底在浅色页面上也突兀 —— 但两害相权，跟系统走命中率最高。
    ---------------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
-  .agnes-toast {
+  .sst-toast {
     box-shadow: 0 3px 16px rgba(0, 0, 0, 0.55);
   }
 
-  .agnes-toast--loading {
+  .sst-toast--loading {
     background: #3a3218;
     border-color: #5c4c22;
     color: #e8c96a;
   }
 
-  .agnes-toast--success {
+  .sst-toast--success {
     background: #1c3324;
     border-color: #2c5138;
     color: #7ddb9c;
   }
 
-  .agnes-toast--error {
+  .sst-toast--error {
     background: #3a1f1f;
     border-color: #5c2e2e;
     color: #f09a9a;
   }
 
-  .agnes-toast__spinner {
+  .sst-toast__spinner {
     border-color: rgba(232, 201, 106, 0.25);
     border-top-color: #e8c96a;
   }

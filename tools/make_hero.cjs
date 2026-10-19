@@ -13,7 +13,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'docs', 'screenshots');
-const PROFILE = path.join(require('os').tmpdir(), 'agnes-hero-shot');
+const PROFILE = path.join(require('os').tmpdir(), 'shunshou-hero-shot');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const SOURCE = '这个功能挺好用的，我以后写英文邮件就靠它了。';

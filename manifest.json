@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "顺手翻译",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "在任意网页输入框输入中文，连敲三次空格，立即翻译并原地替换。默认走免费通道，无需申请 API Key；也可接入自己的 AI 服务，自动选最快的一家。",
   "minimum_chrome_version": "110",
   "commands": {

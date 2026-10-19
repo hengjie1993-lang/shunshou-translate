@@ -1,7 +1,7 @@
 /**
  * 开发自测脚本：验证 translator.js 的清洗逻辑与真实接口调用。
  *
- * 用法（在 agnes-translator 目录下）：
+ * 用法（在项目根目录下）：
  *   AGNES_API_KEY=sk-xxx node tools/test_translate.mjs
  *
  * 需要 Node 18+（内置 fetch）。走代理时加 NODE_USE_ENV_PROXY=1。

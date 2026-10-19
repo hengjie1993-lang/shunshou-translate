@@ -1,13 +1,20 @@
-# 顺手翻译
+# 顺手翻译 · Shunshou Translate
+
+**简体中文** | [English](README.en.md)
 
 在任意网页的输入框里写完中文，**连敲三次空格**，内容立刻变成目标语言并原地替换。
+
+> **Type Chinese in any text box, press the spacebar three times, and the text is replaced in place with your target language.**
+> A Chrome MV3 extension that works out of the box — no API key, no account, no telemetry.
 
 **装完就能用，不需要申请任何 API Key。** 默认走免费通道（Chrome 内置离线模型 + 谷歌免费通道）；
 想要更好的译文质量，再自己加一家 AI 服务商，不填也不影响使用。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-4285F4.svg)](manifest.json)
+[![Chrome 110+](https://img.shields.io/badge/Chrome-110%2B-4285F4.svg)](#安装)
 [![No Telemetry](https://img.shields.io/badge/telemetry-none-brightgreen.svg)](SECURITY.md)
+[![No API Key](https://img.shields.io/badge/API%20key-not%20required-success.svg)](#安装)
 
 ```
 chrome://extensions → 开发者模式 → 加载已解压的扩展程序 → 选这个文件夹
@@ -558,9 +565,11 @@ shunshou-translate/
 │   ├── test_translate.mjs     # 翻译模块自测（清洗逻辑 + 真实接口）
 │   └── e2e-test.cjs           # 全链路端到端测试
 ├── test/test.html             # 本地测试页
+├── .github/ISSUE_TEMPLATE/    # 问题反馈模板
 ├── SECURITY.md                # 密钥与数据安全说明
 ├── LICENSE                    # MIT
-└── README.md
+├── README.md                  # 本文件（中文）
+└── README.en.md               # 英文版
 ```
 
 ---
