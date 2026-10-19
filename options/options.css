@@ -11,50 +11,67 @@
 :root {
   color-scheme: light;
 
-  /* ---- 圆角 ---- */
-  --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 12px;
+  /* ---- 圆角：由一档比例派生，避免 6/8/10/12 各写各的 ---- */
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
   --r-pill: 999px;
 
-  /* ---- 中性色 ---- */
-  --bg: #f4f5f7;
-  --bg-blur: rgba(244, 245, 247, 0.86); /* 吸顶头部用 */
+  /* ---- 中性色：带一点冷调，比纯灰更像数字产品 ---- */
+  --bg: #f5f6f9;
+  --bg-image: radial-gradient(
+    1100px 460px at 50% -220px,
+    rgba(37, 99, 235, 0.09),
+    rgba(37, 99, 235, 0) 72%
+  );
+  --bg-blur: rgba(245, 246, 249, 0.82); /* 吸顶头部用 */
   --card: #ffffff;
   --surface: #ffffff; /* 输入框 / 按钮底色 */
-  --soft: #f6f7f9;
-  --text: #1f2328;
-  --text-mute: #6b7280;
-  --text-faint: #9aa1ab;
-  --border: rgba(15, 23, 42, 0.12);
-  --border-strong: rgba(15, 23, 42, 0.22);
+  --soft: #f3f5f9; /* 卡片内嵌区块 */
+  --text: #0f1115;
+  --text-mute: #565d6b;
+  --text-faint: #6b7383;
+  --border: rgba(15, 17, 21, 0.08);
+  --border-strong: rgba(15, 17, 21, 0.14);
+  --divider: rgba(15, 17, 21, 0.06);
+
+  /* ---- 次级按钮：无边框浅填充，比「白底描边」更贴近现在的做法 ---- */
+  --btn-bg: #ecf0f6;
+  --btn-bg-hover: #e2e8f1;
 
   /* ---- 品牌主色 ---- */
-  --blue: #185fa5;
-  --blue-strong: #0c447c;
-  --blue-soft: #e6f1fb;
-  --blue-tint: #f7fbff;
-  --blue-border: #b5d4f4;
-  --blue-soft-hover: #f2f8fe;
-  --focus-ring: rgba(24, 95, 165, 0.16);
+  --blue: #2563eb;
+  --blue-strong: #1d4ed8;
+  --blue-soft: #eef4ff;
+  --blue-tint: #f8fbff;
+  --blue-border: #c9dcff;
+  --blue-soft-hover: #e3ecff;
+  --focus-ring: rgba(37, 99, 235, 0.18);
   --on-accent: #ffffff; /* 压在主色块上的文字 */
+  --accent-grad: linear-gradient(180deg, #3b82f6, #2563eb);
 
   /* ---- 语义色 ---- */
-  --green: #1f6b33;
-  --green-soft: #edf7ed;
-  --red: #a32626;
-  --red-soft: #fdeeee;
-  --amber: #7a5c12;
-  --amber-soft: #fdf6e3;
-  --amber-border: #e8cf9a;
+  --green: #067a46;
+  --green-soft: #e8f6ef;
+  --red: #c0281c;
+  --red-soft: #fdeeec;
+  --amber: #96620a;
+  --amber-soft: #fdf5e2;
+  --amber-border: #ecd39a;
 
   /* ---- 控件 ---- */
-  --switch-off: #cfd4da;
+  --switch-off: #d3d8e0;
   --knob: #ffffff;
 
-  /* ---- 阴影 ---- */
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 6px 20px rgba(15, 23, 42, 0.1);
+  /* ---- 阴影：浅色下用极轻的投影代替硬边框 ---- */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04),
+    0 6px 18px -8px rgba(16, 24, 40, 0.12);
+  --shadow-md: 0 1px 2px rgba(16, 24, 40, 0.04),
+    0 12px 28px -16px rgba(16, 24, 40, 0.22);
+  --shadow-lg: 0 24px 60px -28px rgba(16, 24, 40, 0.28);
 }
 
 /* 跟随系统。扩展页面同样能读到 prefers-color-scheme。 */
@@ -62,40 +79,54 @@
   :root {
     color-scheme: dark;
 
-    --bg: #16181d;
-    --bg-blur: rgba(22, 24, 29, 0.86);
-    --card: #1b1e24;
-    --surface: #22262e;
-    --soft: #1f232a;
-    --text: #e6e8ec;
-    --text-mute: #9aa3b2;
-    --text-faint: #6f7787;
-    --border: rgba(255, 255, 255, 0.1);
-    --border-strong: rgba(255, 255, 255, 0.2);
+    --bg: #0b0d11;
+    --bg-image: radial-gradient(
+      1100px 460px at 50% -220px,
+      rgba(120, 166, 255, 0.1),
+      rgba(120, 166, 255, 0) 72%
+    );
+    --bg-blur: rgba(11, 13, 17, 0.8);
+    --card: #13161c;
+    --surface: #191d25;
+    --soft: #1a1e26;
+    --text: #e8ebf0;
+    --text-mute: #a2abba;
+    --text-faint: #8b95a5;
+    --border: rgba(255, 255, 255, 0.075);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    --divider: rgba(255, 255, 255, 0.055);
+
+    --btn-bg: #242a35;
+    --btn-bg-hover: #2d3441;
 
     /* 暗色下主色要提亮，否则压在深底上读不清 */
-    --blue: #6cb0f5;
-    --blue-strong: #a8d0fb;
-    --blue-soft: rgba(108, 176, 245, 0.14);
-    --blue-tint: rgba(108, 176, 245, 0.07);
-    --blue-border: rgba(108, 176, 245, 0.34);
-    --blue-soft-hover: rgba(108, 176, 245, 0.2);
-    --focus-ring: rgba(108, 176, 245, 0.3);
-    --on-accent: #16181d;
+    --blue: #78a6ff;
+    --blue-strong: #a9c6ff;
+    --blue-soft: rgba(120, 166, 255, 0.13);
+    --blue-tint: rgba(120, 166, 255, 0.055);
+    --blue-border: rgba(120, 166, 255, 0.28);
+    --blue-soft-hover: rgba(120, 166, 255, 0.18);
+    --focus-ring: rgba(120, 166, 255, 0.3);
+    --on-accent: #0b0d11;
+    --accent-grad: linear-gradient(180deg, #93b9ff, #6f9dff);
 
-    --green: #6ed88f;
-    --green-soft: rgba(110, 216, 143, 0.14);
-    --red: #f28b8b;
-    --red-soft: rgba(242, 139, 139, 0.14);
-    --amber: #e3b95f;
-    --amber-soft: rgba(227, 185, 95, 0.14);
-    --amber-border: rgba(227, 185, 95, 0.32);
+    --green: #5fd39a;
+    --green-soft: rgba(95, 211, 154, 0.13);
+    --red: #ff9a90;
+    --red-soft: rgba(255, 154, 144, 0.13);
+    --amber: #e8bd63;
+    --amber-soft: rgba(232, 189, 99, 0.13);
+    --amber-border: rgba(232, 189, 99, 0.3);
 
-    --switch-off: #3a4150;
-    --knob: #e6e8ec;
+    --switch-off: #333b48;
+    --knob: #e8ebf0;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.45),
+      0 10px 26px -14px rgba(0, 0, 0, 0.85);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.45),
+      0 14px 32px -18px rgba(0, 0, 0, 0.9);
+    --shadow-lg: 0 28px 64px -30px rgba(0, 0, 0, 1);
   }
 }
 
@@ -110,18 +141,40 @@
 
 body {
   margin: 0;
-  padding: 32px 20px 48px;
-  background: var(--bg);
+  padding: 0 20px 72px;
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 吸顶栏要通栏，所以它不能待在 .page 里面；内层再收窄回同一列宽 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0 -20px;
+  padding: 0 20px;
+  background: var(--bg-blur);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+}
+
+.topbar__inner {
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .page {
-  max-width: 640px;
+  max-width: 760px;
   margin: 0 auto;
+  padding-top: 26px;
 }
 
 /* ---------------------------------- 头部 ---------------------------------- */
@@ -131,41 +184,53 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
+  padding: 11px 0;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
 }
 
 .brand__icon {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--r-lg);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .brand__name {
   margin: 0;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .brand__sub {
-  margin: 0;
-  font-size: 12px;
+  margin: 1px 0 0;
+  font-size: 12.5px;
   color: var(--text-mute);
 }
 
 .head__right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.head__label {
+  font-size: 12.5px;
+  color: var(--text-mute);
 }
 
 .saved {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--green);
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -191,11 +256,12 @@ body {
 }
 
 .switch__track {
-  width: 40px;
-  height: 22px;
+  width: 44px;
+  height: 26px;
   border-radius: var(--r-pill);
   background: var(--switch-off);
-  transition: background 0.15s ease;
+  box-shadow: inset 0 1px 2px rgba(15, 17, 21, 0.08);
+  transition: background 0.18s ease;
   position: relative;
 }
 
@@ -204,12 +270,12 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--knob);
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.24), 0 0 0 0.5px rgba(16, 24, 40, 0.06);
+  transition: transform 0.22s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
 
 .switch input:checked + .switch__track {
@@ -234,21 +300,22 @@ body {
   gap: 16px;
   padding: 14px 16px;
   margin-bottom: 16px;
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
   background: var(--blue-soft);
   border: 1px solid var(--blue-border);
 }
 
 .banner__title {
   margin: 0;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--blue-strong);
 }
 
 .banner__desc {
-  margin: 2px 0 0;
-  font-size: 12px;
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
   color: var(--blue);
 }
 
@@ -284,35 +351,22 @@ body {
   flex: none;
 }
 
-.btn--sm {
-  padding: 5px 10px;
-  font-size: 11.5px;
-}
-
-.btn--ghost {
-  background: transparent;
-  border-color: var(--amber-border);
-  color: var(--amber);
-}
-
-.btn--ghost:hover {
-  background: var(--amber-soft);
-}
-
 /* ---------------------------------- 卡片 ---------------------------------- */
 
 .card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: 16px 18px;
-  margin-bottom: 14px;
+  padding: 20px 22px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-card);
 }
 
 .card__title {
   margin: 0 0 14px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
 }
 
 .grid {
@@ -328,32 +382,36 @@ body {
 .field__label {
   display: block;
   font-size: 12px;
+  font-weight: 500;
   color: var(--text-mute);
   margin-bottom: 6px;
+  letter-spacing: 0.01em;
 }
 
 .field__control {
   width: 100%;
-  padding: 8px 10px;
+  min-height: 38px;
+  padding: 8px 12px;
   border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
   background: var(--surface);
   color: var(--text);
   font-family: inherit;
-  font-size: 13px;
+  font-size: 13.5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .field__control:focus {
   outline: none;
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--focus-ring);
+  box-shadow: 0 0 0 3.5px var(--focus-ring);
 }
 
 textarea.field__control {
   resize: vertical;
   line-height: 1.6;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 12px;
+  font-size: 12.5px;
 }
 
 .input-row {
@@ -367,7 +425,7 @@ textarea.field__control {
 
 .tip {
   margin: 7px 0 0;
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-faint);
   line-height: 1.55;
 }
@@ -380,7 +438,7 @@ textarea.field__control {
 }
 
 .test-result {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-mute);
 }
 
@@ -395,41 +453,69 @@ textarea.field__control {
 /* ---------------------------------- 按钮 ---------------------------------- */
 
 .btn {
+  min-height: 36px;
   padding: 8px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: var(--btn-bg);
   color: var(--text);
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.12s ease;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.12s ease, filter 0.15s ease;
 }
 
 .btn:hover {
-  background: var(--soft);
+  background: var(--btn-bg-hover);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0.5px);
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: default;
 }
 
+/* 唯一的主行动按钮（目前只有弹窗在用）：实心主色，视觉上必须有且只有一个 */
 .btn--primary {
-  background: var(--surface);
-  border-color: var(--blue-border);
-  color: var(--blue);
-  font-weight: 500;
+  background: var(--accent-grad);
+  border-color: transparent;
+  color: var(--on-accent);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3),
+    0 8px 18px -10px rgba(37, 99, 235, 0.55);
 }
 
 .btn--primary:hover {
-  background: var(--blue-soft-hover);
+  background: var(--accent-grad);
+  filter: brightness(1.05);
+}
+
+/* 变体必须写在 .btn 之后 —— 同权重，靠顺序生效，写在前面会被基础样式吃掉 */
+.btn--sm {
+  min-height: 30px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--amber-border);
+  color: var(--amber);
+}
+
+.btn--ghost:hover {
+  background: var(--amber-soft);
 }
 
 .btn--mini {
-  padding: 8px 12px;
-  font-size: 12px;
+  min-height: 30px;
+  padding: 4px 11px;
+  font-size: 12.5px;
 }
 
 /* ---------------------------------- 页脚 ---------------------------------- */
@@ -443,7 +529,7 @@ textarea.field__control {
 }
 
 .foot__note {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-faint);
 }
 
@@ -454,7 +540,7 @@ textarea.field__control {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .card__head .card__title {
@@ -462,8 +548,9 @@ textarea.field__control {
 }
 
 .card__hint {
-  font-size: 11.5px;
+  font-size: 12.5px;
   color: var(--text-faint);
+  text-align: right;
 }
 
 /* ------------------------------ 预设按钮 ------------------------------ */
@@ -471,48 +558,57 @@ textarea.field__control {
 .presets {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .preset {
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
-  padding: 7px 11px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  background: var(--surface);
+  gap: 2px;
+  padding: 9px 13px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: var(--btn-bg);
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.12s ease;
 }
 
 .preset:hover {
-  background: var(--soft);
-  border-color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--blue-border);
+}
+
+.preset:hover .preset__name {
+  color: var(--blue);
 }
 
 .preset--added {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: default;
 }
 
 .preset--added:hover {
-  background: var(--surface);
-  border-color: var(--border-strong);
+  background: var(--btn-bg);
+  border-color: transparent;
+}
+
+.preset--added:hover .preset__name {
+  color: var(--text);
 }
 
 .preset__name {
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text);
 }
 
 .preset__note {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--text-faint);
 }
 
@@ -521,23 +617,26 @@ textarea.field__control {
 .providers {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .providers__empty {
-  padding: 18px;
+  padding: 20px;
   text-align: center;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-faint);
   border: 1px dashed var(--border-strong);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-md);
 }
 
+/* 嵌在白色卡片里，所以用底色区分层级、不加边框 —— 否则框套框会很碎 */
 .provider {
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 14px 16px;
   background: var(--soft);
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .provider--primary {
@@ -553,31 +652,32 @@ textarea.field__control {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .provider__index {
   flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--r-sm);
-  background: var(--blue-soft);
-  color: var(--blue);
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-xs);
+  background: var(--surface);
+  color: var(--text-faint);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .provider__name {
   flex: 1;
   min-width: 0;
-  padding: 5px 8px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 6px 8px;
+  font-size: 14px;
+  font-weight: 600;
   border: 1px solid transparent;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-xs);
   background: transparent;
   font-family: inherit;
   color: var(--text);
@@ -597,8 +697,8 @@ textarea.field__control {
 .provider__badge {
   flex: 0 0 auto;
   font-size: 10.5px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
   background: var(--blue-soft);
   color: var(--blue);
   white-space: nowrap;
@@ -613,7 +713,7 @@ textarea.field__control {
 
 .provider__ops .btn {
   padding: 5px 9px;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .provider .grid {
@@ -631,11 +731,11 @@ textarea.field__control {
 
 .provider__foot .btn {
   padding: 5px 10px;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .provider__result {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-mute);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -657,17 +757,17 @@ textarea.field__control {
 /* ------------------------------ 小号开关 ------------------------------ */
 
 .switch--sm .switch__track {
-  width: 32px;
-  height: 18px;
+  width: 38px;
+  height: 22px;
 }
 
 .switch--sm .switch__track::after {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
 }
 
 .switch--sm input:checked + .switch__track::after {
-  transform: translateX(14px);
+  transform: translateX(16px);
 }
 
 /* ------------------------------ 其他 ------------------------------ */
@@ -678,7 +778,7 @@ textarea.field__control {
   padding: 9px;
   border-style: dashed;
   color: var(--text-mute);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .btn--wide:hover {
@@ -694,27 +794,27 @@ textarea.field__control {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 10px 0 14px;
-  padding: 9px 12px;
+  margin: 12px 0 16px;
+  padding: 11px 14px;
   background: var(--blue-soft);
   border: 1px solid var(--blue-border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-sm);
 }
 
 .smart__tag {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--blue);
   white-space: nowrap;
 }
 
 .smart__desc {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-mute);
 }
 
 .smart__flash {
-  font-size: 12px;
+  font-size: 12.5px;
   min-height: 0;
 }
 
@@ -742,7 +842,7 @@ textarea.field__control {
   border: 0;
   background: none;
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: 11.5px;
   font-family: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -764,7 +864,7 @@ textarea.field__control {
   flex-shrink: 0;
   padding: 2px 8px;
   border-radius: var(--r-pill);
-  font-size: 11px;
+  font-size: 11.5px;
   white-space: nowrap;
 }
 
@@ -789,7 +889,7 @@ textarea.field__control {
   border-radius: var(--r-pill);
   background: var(--blue-soft);
   color: var(--blue);
-  font-size: 11px;
+  font-size: 11.5px;
   white-space: nowrap;
 }
 
@@ -815,17 +915,8 @@ textarea.field__control {
    - 加载态用骨架条，而不是「加载中…」四个字
    ============================================================================ */
 
-/* 吸顶头部：设置页很长，改完配置要随时能看到「已保存」 */
-.page__head {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  margin: 0 0 20px;
-  padding: 12px 0;
-  background: var(--bg-blur);
-  backdrop-filter: saturate(180%) blur(10px);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
-}
+/* 吸顶头部：设置页很长，改完配置要随时能看到「已保存」。
+   实际样式在 .topbar（.page 之外，才能通栏出血）。 */
 
 /* 键盘可达性：只在键盘 Tab 到的时候出现，不干扰鼠标用户 */
 .btn:focus-visible,
@@ -841,20 +932,14 @@ textarea.field__control {
 .preset,
 .provider,
 .provider__name,
-.field__control,
-.smart__chip {
+.field__control {
   transition: background-color 0.15s ease, border-color 0.15s ease,
     box-shadow 0.15s ease, transform 0.15s ease, color 0.15s ease;
 }
 
 /* 悬停时轻微抬起，暗示「这一块可以操作」 */
 .provider:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
-}
-
-.preset:hover {
-  box-shadow: var(--shadow-sm);
+  border-color: var(--border);
 }
 
 .btn:active:not(:disabled),
@@ -862,10 +947,7 @@ textarea.field__control {
   transform: translateY(0.5px);
 }
 
-/* 主按钮用一层极浅的渐变，比纯平底色更有质感 */
-.btn--primary {
-  background: linear-gradient(180deg, var(--blue-soft), var(--blue-tint));
-}
+/* 主按钮的实心渐变在 .btn--primary 里统一定义，这里不再覆盖 */
 
 /* 只给读屏软件看的内容（骨架条要保留「测速中…」这句） */
 .sr-only {
@@ -921,10 +1003,15 @@ textarea.field__control {
 }
 
 .engine {
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--r-md);
-  padding: 12px 14px;
+  padding: 14px 16px;
   background: var(--soft);
+  transition: border-color 0.15s ease;
+}
+
+.engine:hover {
+  border-color: var(--border);
 }
 
 .engine__head {
@@ -938,7 +1025,7 @@ textarea.field__control {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
 }
@@ -946,7 +1033,7 @@ textarea.field__control {
 /* 状态行就是这一块的正文（原来还另有一行 .engine__desc，已合并进来） */
 .engine__stat {
   margin: 5px 0 0;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.5;
   color: var(--text-mute);
 }
@@ -968,9 +1055,9 @@ textarea.field__control {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--divider);
 }
 
 .opt-row__text {
@@ -982,12 +1069,13 @@ textarea.field__control {
 }
 
 .opt-row__name {
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 500;
   color: var(--text);
 }
 
 .opt-row__desc {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 

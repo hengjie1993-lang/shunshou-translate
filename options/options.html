@@ -7,29 +7,34 @@
   <link rel="stylesheet" href="options.css" />
 </head>
 <body>
-  <div class="page">
-
-    <header class="page__head">
-      <div class="brand">
-        <img class="brand__icon" src="../icons/icon48.png" alt="" />
-        <div>
-          <h1 class="brand__name">顺手翻译</h1>
-          <p class="brand__sub">设置 · <span id="verText" title="浏览器当前实际加载的版本">v—</span></p>
+  <div class="topbar">
+    <div class="topbar__inner">
+      <header class="page__head">
+        <div class="brand">
+          <img class="brand__icon" src="../icons/icon48.png" alt="" />
+          <div class="brand__text">
+            <h1 class="brand__name">顺手翻译</h1>
+            <p class="brand__sub">设置 · <span id="verText" title="浏览器当前实际加载的版本">v—</span></p>
+          </div>
         </div>
-      </div>
-      <div class="head__right">
-        <span class="saved" id="savedFlag">已保存</span>
-        <label class="switch" title="启用 / 停用">
-          <input type="checkbox" id="enabled" />
-          <span class="switch__track"></span>
-        </label>
-      </div>
-    </header>
+        <div class="head__right">
+          <span class="saved" id="savedFlag">已保存</span>
+          <span class="head__label">启用</span>
+          <label class="switch" title="启用 / 停用">
+            <input type="checkbox" id="enabled" />
+            <span class="switch__track"></span>
+          </label>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <div class="page">
 
     <div class="banner" id="banner" hidden>
       <div class="banner__body">
-        <p class="banner__title">还没添加 AI 服务商</p>
-        <p class="banner__desc">不影响使用 —— 上面的免费引擎已经能翻译。想加的话，从下面挑一家点「添加」，去官网免费申请 API Key 填进来即可。</p>
+        <p class="banner__title">AI 服务商是可选的</p>
+        <p class="banner__desc">免费引擎已经能翻译，这里只是备选 —— 想要更快或更准，从下面挑一家点「添加」，去官网免费申请 API Key 填进来即可。</p>
       </div>
     </div>
 
