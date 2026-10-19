@@ -44,6 +44,7 @@ import {
   describeStat
 } from '../lib/stats.js';
 import { checkVersionDrift, runningVersionOf } from '../lib/versionGuard.js';
+import { detectBrowser, reloadExtension, openExtensionsPage } from '../lib/browserEnv.js';
 
 /* ----------------------------- mock chrome.storage ----------------------------- */
 
@@ -700,7 +701,7 @@ store = savedStore;
 
 /* ----------------------------- 13. 版本自检 ----------------------------- */
 
-console.log('\n=== 13. 版本自检（识破「改了代码没在 chrome://extensions 刷新」）===');
+console.log('\n=== 13. 版本自检（识破「改了代码没在扩展管理页刷新」）===');
 
 // 这一节要同时用 chrome.runtime 和 fetch，单独换一套 mock，别污染上面的 fetch 计划
 const fetchBeforeGuard = globalThis.fetch;
@@ -763,9 +764,72 @@ ok('runningVersionOf 对空值安全', runningVersionOf(null) === '');
 
 globalThis.fetch = fetchBeforeGuard;
 
-/* ------------------------- 14. 密钥不外泄（开源前提） ------------------------- */
+/* ------------------- 14. 双浏览器兼容（Chrome / Edge） ------------------- */
 
-console.log('\n=== 14. 错误文本里不得出现 API Key ===');
+console.log('\n=== 14. 同一份包跑在 Chrome 和 Edge 上 ===');
+
+// 真实 UA 形态。**Edge 的 UA 里也带 `Chrome/`** —— 匹配顺序写反就会把 Edge 认成 Chrome，
+// 于是 edge://extensions 变成 chrome://extensions，在 Edge 上就是一段死地址。
+const UA_EDGE =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0';
+const UA_EDGE_ANDROID =
+  'Mozilla/5.0 (Linux; Android 10; HD1913) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36 EdgA/155.0.0.0';
+const UA_CHROME =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
+const UA_FIREFOX = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0';
+
+ok('Edge 被识别为 edge（没有被 UA 里的 Chrome/ 带偏）', detectBrowser(UA_EDGE).id === 'edge', detectBrowser(UA_EDGE));
+ok('Edge 的扩展管理页是 edge://extensions', detectBrowser(UA_EDGE).extUrl === 'edge://extensions');
+ok('Edge 显示名是 Edge', detectBrowser(UA_EDGE).name === 'Edge');
+ok('Edge Android（EdgA/）同样识别', detectBrowser(UA_EDGE_ANDROID).id === 'edge');
+ok('Chrome 被识别为 chrome', detectBrowser(UA_CHROME).id === 'chrome', detectBrowser(UA_CHROME));
+ok('Chrome 的扩展管理页是 chrome://extensions', detectBrowser(UA_CHROME).extUrl === 'chrome://extensions');
+ok('其它内核兜底成 Chromium（Brave / Opera 认 chrome://）', detectBrowser(UA_FIREFOX).id === 'chromium');
+ok('空 UA 不崩，返回兜底值', detectBrowser('').id === 'chromium');
+ok('detectBrowser 不传参也不崩', typeof detectBrowser().id === 'string');
+
+// 源码里不允许再出现写死的跳转 —— 这是 Edge 上唯一会真正断掉的地方
+const { readFileSync, readdirSync, statSync } = await import('node:fs');
+const { join, dirname } = await import('node:path');
+const { fileURLToPath } = await import('node:url');
+const SRC = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+function walk(dir, out = []) {
+  for (const name of readdirSync(dir)) {
+    if (name === 'node_modules' || name === '.git' || name === 'dist') continue;
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) walk(p, out);
+    else if (/\.(js|html)$/.test(name)) out.push(p);
+  }
+  return out;
+}
+
+const srcFiles = walk(join(SRC, 'popup')).concat(walk(join(SRC, 'options')), [
+  join(SRC, 'background.js')
+]);
+const hardcodedNav = srcFiles.filter((f) => {
+  const s = readFileSync(f, 'utf8');
+  // 只抓「真的拿去跳转」的写法，注释里提 chrome:// 是正常的
+  return /tabs\.create\s*\(\s*\{\s*url\s*:\s*['"]chrome:\/\//.test(s);
+});
+ok('没有写死的 tabs.create({url:"chrome://..."})', hardcodedNav.length === 0, hardcodedNav);
+
+// reloadExtension 走 chrome.runtime.reload —— 两个浏览器都支持，也不会被受保护页面拦住
+let reloaded = 0;
+const runtimeBefore = globalThis.chrome.runtime;
+globalThis.chrome.runtime = { ...runtimeBefore, reload: () => { reloaded += 1; } };
+ok('reloadExtension() 调到 chrome.runtime.reload', reloadExtension() === true && reloaded === 1, reloaded);
+globalThis.chrome.runtime = { ...runtimeBefore, reload: () => { throw new Error('blocked'); } };
+ok('reloadExtension() 被拒时返回 false 而不是抛错', reloadExtension() === false);
+globalThis.chrome.runtime = runtimeBefore;
+
+// openExtensionsPage 在受保护页面上会失败，必须吞掉异常
+globalThis.chrome.tabs = { create: async () => { throw new Error('Cannot access a chrome:// URL'); } };
+ok('openExtensionsPage() 打不开受保护页面时返回 false', (await openExtensionsPage('chrome://extensions')) === false);
+
+/* ------------------------- 15. 密钥不外泄（开源前提） ------------------------- */
+
+console.log('\n=== 15. 错误文本里不得出现 API Key ===');
 
 // 全部用重复字符拼出来，一眼就是假的。
 // 不要写成像真的随机串 —— GitHub 的密钥扫描会把它当成泄露并拦住 push。

@@ -316,6 +316,8 @@ function serve(root) {
       disk: document.getElementById('staleDisk')?.textContent.trim() || '',
       run: document.getElementById('staleRun')?.textContent.trim() || '',
       hasOpenBtn: !!document.getElementById('staleOpen'),
+      openLabel: document.getElementById('staleOpen')?.textContent.trim() || '',
+      copyUrl: document.getElementById('staleCopy')?.dataset.url || '',
       hasCopyBtn: !!document.getElementById('staleCopy'),
       verTitle: document.getElementById('verText')?.title || ''
     };
@@ -326,7 +328,13 @@ function serve(root) {
   if (!/旧版本/.test(drift.title)) problems.push('告警标题应说明后台在跑旧版本，实际: ' + drift.title);
   if (!/1\.8\.0/.test(drift.disk)) problems.push('告警应写出磁盘上的版本 v1.8.0，实际: ' + drift.disk);
   if (!/1\.0\.0/.test(drift.run)) problems.push('告警应写出后台实际在跑的版本 v1.0.0，实际: ' + drift.run);
-  if (!drift.hasOpenBtn || !drift.hasCopyBtn) problems.push('告警应提供「打开扩展管理页」和「复制地址」两个操作');
+  if (!drift.hasOpenBtn || !drift.hasCopyBtn) problems.push('告警应提供「立即刷新」和「复制地址」两个操作');
+  // 扩展无权跳转 chrome:// 这类受保护页面，所以按钮必须走 runtime.reload，不能写成「打开管理页」
+  if (!/刷新/.test(drift.openLabel)) problems.push('刷新按钮文案应说明是刷新，实际: ' + drift.openLabel);
+  // 复制出来的地址要跟着浏览器走；headless Chrome 下必须是 chrome://extensions
+  if (!/^chrome:\/\/extensions$/.test(drift.copyUrl)) {
+    problems.push('Chrome 下复制的扩展管理页地址应为 chrome://extensions，实际: ' + drift.copyUrl);
+  }
   if (!/1\.8\.0/.test(drift.verTitle) || !/1\.0\.0/.test(drift.verTitle)) {
     problems.push('页头版本号的 tooltip 应写清磁盘版本与运行版本，实际: ' + drift.verTitle);
   }

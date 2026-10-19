@@ -4,6 +4,7 @@ import { DEFAULT_SETTINGS, loadSettings, saveSettings } from '../lib/settings.js
 import { orderBySpeed, describeStat } from '../lib/stats.js';
 import { localLang, pickLocalSourceLang } from '../lib/freeEngines.js';
 import { checkVersionDrift as checkVersionDriftShared, runningVersionOf } from '../lib/versionGuard.js';
+import { detectBrowser, reloadExtension } from '../lib/browserEnv.js';
 
 /* --------------------------------- 元素 --------------------------------- */
 
@@ -33,6 +34,7 @@ const els = {
   clearCache: document.getElementById('clearCache'),
   engineGoogle: document.getElementById('engineGoogle'),
   engineLocal: document.getElementById('engineLocal'),
+  engineLocalName: document.getElementById('engineLocalName'),
   engineGoogleStat: document.getElementById('engineGoogleStat'),
   engineLocalStat: document.getElementById('engineLocalStat'),
   blacklist: document.getElementById('blacklist'),
@@ -276,17 +278,26 @@ async function checkVersionDrift() {
 }
 
 function bindStaleBanner() {
+  const env = detectBrowser();
+  const label = els.staleOpen.textContent;
+
+  // 复制按钮里放当前浏览器的地址：Chrome 是 chrome://extensions，Edge 是 edge://extensions。
+  // 写死 chrome:// 在 Edge 上复制出来是一段死地址。
+  els.staleCopy.dataset.url = env.extUrl;
+
   els.staleOpen.addEventListener('click', () => {
-    try {
-      chrome.tabs.create({ url: 'chrome://extensions' });
-    } catch (_) {
-      /* 打不开也不影响，下面还有复制地址 */
-    }
+    // 扩展无权跳转 chrome:// / edge:// 这类受保护页面（tabs.create 必然抛错），
+    // 所以这里直接让扩展重载自己 —— 这才是用户真正想要的那一步。
+    if (reloadExtension()) return;
+    els.staleOpen.textContent = '刷新失败，请手动重载';
+    setTimeout(() => {
+      els.staleOpen.textContent = label;
+    }, 2000);
   });
 
   els.staleCopy.addEventListener('click', async () => {
     try {
-      await navigator.clipboard.writeText('chrome://extensions');
+      await navigator.clipboard.writeText(els.staleCopy.dataset.url);
       els.staleCopy.textContent = '已复制';
       setTimeout(() => {
         els.staleCopy.textContent = '复制地址';
@@ -642,12 +653,13 @@ async function refreshEngineStats() {
 
   // 离线引擎：只看模型下好没有，不在这里触发下载
   if (typeof Translator === 'undefined') {
-    setEngineStat(els.engineLocalStat, '此浏览器不支持 —— 需要 Chrome 138 及以上', 'warn');
+    const name = detectBrowser().name;
+    setEngineStat(els.engineLocalStat, `此浏览器不支持 —— 需要 ${name} 138 及以上`, 'warn');
     els.engineLocal.disabled = true;
     return;
   }
   const to = localLang(state.targetLang || 'en');
-  // 源语言必须和 to 不同：Chrome 对同语种一律回 unavailable，
+  // 源语言必须和 to 不同：Chromium 对同语种一律回 unavailable，
   // 那不是「不支持」，是「这对语向没意义」。写错会让状态栏永远误报。
   const from = pickLocalSourceLang(state.targetLang || 'en');
   try {
@@ -709,6 +721,11 @@ async function downloadLocalModel() {
 /* --------------------------------- 启动 --------------------------------- */
 
 (async function init() {
+  // 同一份包跑在 Chrome 和 Edge 上，界面里凡是提到浏览器名字的地方都跟着实际环境走，
+  // 否则 Edge 用户会看到「需要 Chrome 138 及以上」这种对不上号的提示。
+  const env = detectBrowser();
+  if (els.engineLocalName) els.engineLocalName.textContent = `离线翻译（${env.name} 内置）`;
+
   // 先把版本自检亮出来：磁盘上的版本 / 后台实际在跑的版本一旦对不上，直接弹红色告警。
   // 这比在角落显示一个版本号有用得多 —— 那个数字用户不会去比。
   bindStaleBanner();

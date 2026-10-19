@@ -3,6 +3,7 @@ import { usableProviders } from '../lib/providers.js';
 import { orderBySpeed, describeStat } from '../lib/stats.js';
 import { DEFAULT_SETTINGS } from '../lib/settings.js';
 import { checkVersionDrift, runningVersionOf } from '../lib/versionGuard.js';
+import { detectBrowser, reloadExtension } from '../lib/browserEnv.js';
 
 const els = {
   enabled: document.getElementById('enabled'),
@@ -30,10 +31,13 @@ const els = {
 };
 
 /**
- * 浏览器内置页面：内容脚本无法注入（Chrome 的安全限制，不是插件能绕过的）。
- * <all_urls> 不匹配 chrome:// 这类协议。
+ * 浏览器内置页面：内容脚本无法注入（Chromium 的安全限制，不是插件能绕过的）。
+ * `<all_urls>` 不匹配 chrome:// 、edge:// 这类协议，所以下面的判断必须把两家的
+ * 新标签页地址都列上 —— 只写 chrome:// 的话，Edge 的 edge://newtab 会掉进
+ * 「此页面不支持」那条通用分支，白白丢掉给用户的替代方案提示。
  */
-const NTP_RE = /^(chrome:\/\/newtab|chrome:\/\/new-tab-page|chrome-search:\/\/local-ntp)/i;
+const NTP_RE =
+  /^(chrome:\/\/newtab|chrome:\/\/new-tab-page|chrome-search:\/\/local-ntp|edge:\/\/newtab)/i;
 
 /* --------------------------------- 渲染 --------------------------------- */
 
@@ -111,7 +115,7 @@ async function renderDriftWarn() {
   const running = runningVersionOf(result) || '?';
   els.driftText.textContent = `后台还在跑旧版本 v${running}`;
   els.driftWarn.hidden = false;
-  els.driftWarn.title = '去 chrome://extensions 找到「顺手翻译」，点一下 ⟳ 刷新';
+  els.driftWarn.title = '点一下让扩展重新加载，之后新开的页面就是新版代码';
 }
 
 /** 显示「当前会优先用哪家」，让用户知道智能模式选中的是谁 */
@@ -163,14 +167,14 @@ async function checkCurrentPage() {
 
   const url = tab.url || tab.pendingUrl || '';
 
-  // 新标签页：Chrome 禁止扩展注入，这不是 bug，给出替代方案
+  // 新标签页：Chromium 禁止扩展注入，这不是 bug，给出替代方案
   if (NTP_RE.test(url)) {
+    const name = detectBrowser().name;
     setPageCheck(
       'warn',
       '新标签页是浏览器内置页面，任何扩展都无法在这里翻译 —— 用下面的「快捷翻译」即可'
     );
-    els.hint.innerHTML =
-      '新标签页不支持三连空格（Chrome 限制）。用上面的<b>快捷翻译</b>，或换个普通网页使用。';
+    els.hint.innerHTML = `新标签页不支持三连空格（${name} 限制）。用上面的<b>快捷翻译</b>，或换个普通网页使用。`;
     highlightQuickBox();
     return;
   }
@@ -311,11 +315,9 @@ els.keyStatusAction.addEventListener('click', () => {
 });
 
 els.driftAction.addEventListener('click', () => {
-  try {
-    chrome.tabs.create({ url: 'chrome://extensions' });
-  } catch (_) {
-    /* 打不开也没关系，标题里有说明 */
-  }
+  // 直接让扩展重载：扩展无权打开 chrome:// / edge:// 这类受保护页面，
+  // 旧写法 tabs.create('chrome://extensions') 在 Chrome 和 Edge 上都会抛错。
+  reloadExtension();
 });
 
 /* ------------------------------- 快捷翻译事件 ------------------------------- */

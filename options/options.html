@@ -44,11 +44,11 @@
         <p class="banner__title">⚠️ 后台还在跑旧版本，改动没生效</p>
         <p class="banner__desc"><span id="staleDiskWrap">这个页面读的是磁盘上的代码（<b id="staleDisk">v—</b>），但</span>负责翻译的后台仍是 <b id="staleRun">v—</b>。翻译会继续用旧逻辑 —— 这正是「改完还是老样子」的原因。</p>
         <p class="banner__desc banner__desc--how">
-          点下面按钮打开扩展管理页，找到「顺手翻译」，按一下 ⟳ 刷新，然后关掉本页重开。
+          点「立即刷新」，扩展会自己重新加载。本页会随之失效，关掉重开就是最新版。
         </p>
       </div>
       <div class="banner__actions">
-        <button class="btn btn--sm" id="staleOpen" type="button">打开扩展管理页</button>
+        <button class="btn btn--sm" id="staleOpen" type="button">立即刷新</button>
         <button class="btn btn--sm btn--ghost" id="staleCopy" type="button">复制地址</button>
       </div>
     </div>
@@ -73,7 +73,7 @@
 
         <div class="engine">
           <div class="engine__head">
-            <span class="engine__name">离线翻译（Chrome 内置）</span>
+            <span class="engine__name" id="engineLocalName">离线翻译（浏览器内置）</span>
             <label class="switch switch--sm">
               <input type="checkbox" id="engineLocal" />
               <span class="switch__track"></span>

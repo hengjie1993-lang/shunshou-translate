@@ -9,7 +9,7 @@
 
 ### 存在哪
 
-只存在 `chrome.storage.local`，也就是本机 Chrome 配置目录下的
+只存在 `chrome.storage.local`，也就是本机浏览器（Chrome / Edge）配置目录下的
 `Local Extension Settings/<扩展ID>/`。
 
 **不使用 `chrome.storage.sync`** —— 那条通道会把数据同步到你的谷歌账号，
@@ -24,7 +24,7 @@
 | 弹窗 `popup/` | ❌ | 不读 Key，只读开关状态 |
 | **内容脚本 `content/content.js`** | ❌ | **读完立刻剥离**，只保留 `hasKey: true/false`（见 `content.js` 的 `loadSettings()`） |
 | 被注入的网页 | ❌ | 没有 `postMessage`，没有把 Key 写进 DOM，没有在页面上下文执行任何代码 |
-| 其它浏览器扩展 | ❌ | Chrome 的扩展存储按扩展 ID 隔离，别的扩展读不到 |
+| 其它浏览器扩展 | ❌ | Chromium 的扩展存储按扩展 ID 隔离，别的扩展读不到 |
 
 ### 什么情况下会离开本机
 
@@ -74,11 +74,11 @@
 
 2. **`<all_urls>` 权限是必需的。**
    内容脚本要能在任何网站的输入框里工作，就必须申请这个权限。
-   安装时 Chrome 会警告「读取和更改您在所有网站上的数据」——这是该权限的标准提示。
+   安装时浏览器会警告「读取和更改您在所有网站上的数据」——这是该权限的标准提示。
    插件不读取页面正文，只在触发时读当前输入框。
 
 3. **免费通道用的是非公开接口。**
-   `translate.googleapis.com` + `client=dict-chrome-ex` 是 Chrome 浏览器自己调用的参数，
+   `translate.googleapis.com` + `client=dict-chrome-ex` 是 Chrome 浏览器自己调用的参数，Edge 上同样能通，
    不是 Google 官方公开 API。它随时可能失效或被限制，属于设计上的已知风险。
    失效不影响插件可用性 —— 会自动降级到你配置的 AI 服务商。
 

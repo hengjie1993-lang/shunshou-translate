@@ -51,14 +51,26 @@ body:
     attributes:
       label: 插件版本
       description: 弹窗左下角或设置页顶部显示的那个 v 开头的版本号
-      placeholder: v1.11.0
+      placeholder: v1.12.0
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: 用的哪个浏览器
+      options:
+        - Chrome
+        - Edge
+        - 其它 Chromium 内核（Brave / Vivaldi / Opera / 360 等）
+        - Firefox（不支持）
     validations:
       required: true
   - type: input
-    id: chrome
+    id: browserVersion
     attributes:
-      label: Chrome 版本
-      placeholder: 在 chrome://version 里能看到
+      label: 浏览器版本
+      description: Chrome 在 chrome://version 里看，Edge 在 edge://version 里看
+      placeholder: 155.0.8059.82
     validations:
       required: true
   - type: textarea
