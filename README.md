@@ -122,14 +122,14 @@ Chrome 新标签页的地址是 `chrome://newtab` 或 `chrome-search://local-ntp
 
 **方式一：下载解压（不用装 Git）**
 
-去 [Releases](../../releases) 下载最新的 `agnes-translator-x.y.z.zip`，解压到任意目录，然后按下面第 1–5 步加载。
+去 [Releases](../../releases) 下载最新的 `shunshou-translate-x.y.z.zip`，解压到任意目录，然后按下面第 1–5 步加载。
 
 **方式二：从源码加载**
 
 1. 打开 Chrome，地址栏输入 `chrome://extensions` 回车。
 2. 打开右上角的 **开发者模式**。
 3. 点击 **加载已解压的扩展程序**。
-4. 选择本文件夹（`agnes-translator`）。
+4. 选择你解压或 `git clone` 出来的文件夹（里面应该直接能看到 `manifest.json`）。
 5. 在工具栏的拼图图标里找到「顺手翻译」，点图钉固定到工具栏。
 
 > 首次安装会自动打开设置页。**不填任何东西也能用** —— 免费引擎默认就是开的；
@@ -528,7 +528,7 @@ Google Docs 用 canvas 渲染文本，没有可操作的 DOM 结构，技术上�
 ## 目录结构
 
 ```
-agnes-translator/
+shunshou-translate/
 ├── manifest.json              # MV3 清单
 ├── background.js              # 后台：查缓存 → 免费通道 → 智能排序 → 故障转移 → 记录速度 → 自动补测
 ├── lib/
@@ -545,16 +545,12 @@ agnes-translator/
 ├── popup/                     # 工具栏弹出面板（含「当前页面」自检）
 ├── options/                   # 设置页（免费引擎 + AI 服务商 + 缓存管理）
 ├── icons/                     # 16 / 32 / 48 / 128 图标
-├── docs/
-│   ├── screenshots/           # README 与商店用的截图
-│   ├── promo-440x280.png      # 商店宣传图块
-│   ├── privacy-policy.html    # 隐私政策（上架商店时托管用）
-│   └── SUBMIT.md              # Chrome 应用商店提交材料（可选，不上架可忽略）
+├── docs/screenshots/          # README 里引用的截图
 ├── tools/
 │   ├── make_icons.py          # 图标生成脚本
-│   ├── build_store.py         # 打上架包（只收运行时文件，排除开发产物）
-│   ├── make_store_assets.cjs  # 生成设置页截图 + 宣传图块
-│   ├── make_store_hero.cjs    # 生成「真实翻译效果」主图（真敲键、真翻译）
+│   ├── build.py               # 打发布包（只收运行时文件，排除开发产物）
+│   ├── make_screenshots.cjs   # 生成设置页截图（灌演示配置后截图）
+│   ├── make_hero.cjs          # 生成「真实翻译效果」主图（真敲键、真翻译）
 │   ├── test_modules.mjs       # 模块单测：迁移/故障转移/缓存/智能排序/免费引擎/版本自检/密钥脱敏（153 项）
 │   ├── logic-test.cjs         # 内容脚本触发逻辑 + 免费引擎链路回归测试（8 个用例）
 │   ├── options-render-test.cjs# 设置页渲染自检（含卡片顺序、版本告警）

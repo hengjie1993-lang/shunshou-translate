@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-打商店上架包。
+打发布包（给 GitHub Releases 用）。
 
-只收运行时文件，把 tools/ test/ README 这些开发期产物全部排除 ——
-商店审核会看包里每一个文件，多一个调试脚本就多一条被问的理由。
+只收运行时文件，把 tools/ test/ docs/ README 这些开发期产物全部排除 ——
+用户下载后解压加载，包里不该混进任何调试脚本或截图。
 
-用法： python tools/build_store.py
-产物： dist/agnes-translator-<version>.zip（manifest.json 位于压缩包根目录）
+用法： python tools/build.py
+产物： dist/shunshou-translate-<version>.zip（manifest.json 位于压缩包根目录）
 """
 import json
 import os
@@ -46,7 +46,7 @@ def main():
     manifest = json.load(open(os.path.join(ROOT, "manifest.json"), encoding="utf-8"))
     version = manifest["version"]
     os.makedirs(DIST, exist_ok=True)
-    out = os.path.join(DIST, f"agnes-translator-{version}.zip")
+    out = os.path.join(DIST, f"shunshou-translate-{version}.zip")
 
     files = sorted(iter_runtime_files())
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
