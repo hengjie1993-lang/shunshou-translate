@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>顺手翻译 · 设置</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="page">
+
+    <header class="page__head">
+      <div class="brand">
+        <img class="brand__icon" src="../icons/icon48.png" alt="" />
+        <div>
+          <h1 class="brand__name">顺手翻译</h1>
+          <p class="brand__sub">设置 · <span id="verText" title="浏览器当前实际加载的版本">v—</span></p>
+        </div>
+      </div>
+      <div class="head__right">
+        <span class="saved" id="savedFlag">已保存</span>
+        <label class="switch" title="启用 / 停用">
+          <input type="checkbox" id="enabled" />
+          <span class="switch__track"></span>
+        </label>
+      </div>
+    </header>
+
+    <div class="banner" id="banner" hidden>
+      <div class="banner__body">
+        <p class="banner__title">还没添加 AI 服务商</p>
+        <p class="banner__desc">不影响使用 —— 上面的免费引擎已经能翻译。想加的话，从下面挑一家点「添加」，去官网免费申请 API Key 填进来即可。</p>
+      </div>
+    </div>
+
+    <!-- 版本不一致告警：磁盘上是新版，浏览器后台还在跑旧版 -->
+    <div class="banner banner--warn" id="staleBanner" hidden>
+      <div class="banner__body">
+        <p class="banner__title">⚠️ 后台还在跑旧版本，改动没生效</p>
+        <p class="banner__desc"><span id="staleDiskWrap">这个页面读的是磁盘上的代码（<b id="staleDisk">v—</b>），但</span>负责翻译的后台仍是 <b id="staleRun">v—</b>。翻译会继续用旧逻辑 —— 这正是「改完还是老样子」的原因。</p>
+        <p class="banner__desc banner__desc--how">
+          点下面按钮打开扩展管理页，找到「顺手翻译」，按一下 ⟳ 刷新，然后关掉本页重开。
+        </p>
+      </div>
+      <div class="banner__actions">
+        <button class="btn btn--sm" id="staleOpen" type="button">打开扩展管理页</button>
+        <button class="btn btn--sm btn--ghost" id="staleCopy" type="button">复制地址</button>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="card__head">
+        <h2 class="card__title">免费引擎</h2>
+        <span class="card__hint">默认开启 · 不消耗任何额度</span>
+      </div>
+
+      <div class="engines">
+        <div class="engine">
+          <div class="engine__head">
+            <span class="engine__name">谷歌免费通道</span>
+            <label class="switch switch--sm">
+              <input type="checkbox" id="engineGoogle" />
+              <span class="switch__track"></span>
+            </label>
+          </div>
+          <p class="engine__stat" id="engineGoogleStat">检测中…</p>
+        </div>
+
+        <div class="engine">
+          <div class="engine__head">
+            <span class="engine__name">离线翻译（Chrome 内置）</span>
+            <label class="switch switch--sm">
+              <input type="checkbox" id="engineLocal" />
+              <span class="switch__track"></span>
+            </label>
+          </div>
+          <p class="engine__stat" id="engineLocalStat">检测中…</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__head">
+        <h2 class="card__title">AI 翻译服务</h2>
+        <span class="card__hint">可选 · 不填也能用</span>
+      </div>
+
+      <!-- 压成一行：排序详情各张服务卡片上已有「当前第 N 位」标记，不再重复一遍 -->
+      <div class="smart" id="smartBox">
+        <span class="smart__tag">⚡ 智能模式</span>
+        <span class="smart__desc" id="smartDesc">…</span>
+        <span class="smart__flash" id="smartFlash"></span>
+        <button class="smart__reset" id="resetSpeed" type="button">重新学习</button>
+      </div>
+
+      <p class="field__label">快速添加</p>
+      <div class="presets" id="presets"></div>
+
+      <div class="providers" id="providers"></div>
+
+      <button class="btn btn--wide" id="addCustom" type="button">+ 添加自定义服务（任何兼容 OpenAI 协议的服务）</button>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">触发方式</h2>
+      <div class="grid">
+        <div>
+          <label class="field__label" for="triggerCount">连敲空格次数</label>
+          <select class="field__control" id="triggerCount">
+            <option value="2">2 次</option>
+            <option value="3">3 次</option>
+            <option value="4">4 次</option>
+            <option value="5">5 次</option>
+          </select>
+        </div>
+        <div>
+          <label class="field__label" for="triggerWindow">连击时间窗口</label>
+          <select class="field__control" id="triggerWindow">
+            <option value="300">300 毫秒</option>
+            <option value="500">500 毫秒</option>
+            <option value="800">800 毫秒</option>
+            <option value="1200">1200 毫秒</option>
+          </select>
+        </div>
+      </div>
+      <p class="tip">在输入框输入内容后，于时间窗口内连续敲下指定次数的空格即可触发翻译；最后一次空格会被拦截，不会进入输入框。</p>
+    </section>
+
+    <!-- 目标语言 / 语气 / 缓存 / 黑名单合成一张卡，少三块视觉噪音 -->
+    <section class="card">
+      <h2 class="card__title">其他设置</h2>
+
+      <div class="grid">
+        <div>
+          <label class="field__label" for="targetLang">目标语言</label>
+          <select class="field__control" id="targetLang"></select>
+        </div>
+        <div>
+          <label class="field__label" for="tone">语气风格</label>
+          <select class="field__control" id="tone">
+            <option value="natural">自然口语</option>
+            <option value="formal">正式书面</option>
+            <option value="literal">忠实直译</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="opt-row">
+        <div class="opt-row__text">
+          <span class="opt-row__name">本地缓存</span>
+          <span class="opt-row__desc" id="cacheStat">读取中…</span>
+        </div>
+        <button class="btn btn--mini" id="clearCache" type="button">清空</button>
+        <label class="switch switch--sm" title="启用 / 停用">
+          <input type="checkbox" id="cacheEnabled" />
+          <span class="switch__track"></span>
+        </label>
+      </div>
+
+      <label class="field__label" for="blacklist">黑名单域名（每行一个，命中后该站点不启用翻译）</label>
+      <textarea class="field__control" id="blacklist" rows="3" spellcheck="false" placeholder="mail.google.com&#10;docs.google.com"></textarea>
+    </section>
+
+    <footer class="page__foot">
+      <button class="btn" id="resetBtn" type="button">恢复默认</button>
+      <span class="foot__note">所有修改自动保存</span>
+    </footer>
+
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

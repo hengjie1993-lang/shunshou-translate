@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>顺手翻译</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="head">
+    <div class="brand">
+      <img class="brand__icon" src="../icons/icon48.png" alt="" />
+      <div class="brand__text">
+        <p class="brand__name">顺手翻译</p>
+        <p class="brand__sub" id="statusText">读取中…</p>
+      </div>
+    </div>
+    <label class="switch" title="启用 / 停用">
+      <input type="checkbox" id="enabled" />
+      <span class="switch__track"></span>
+    </label>
+  </header>
+
+  <div class="status" id="keyStatus" hidden>
+    <span class="status__text" id="keyStatusText"></span>
+    <button class="link" id="keyStatusAction" hidden></button>
+  </div>
+
+  <!-- 后台仍在跑旧版本时才会出现：说明改了代码没在 chrome://extensions 点刷新 -->
+  <div class="drift" id="driftWarn" hidden>
+    <span class="drift__text" id="driftText"></span>
+    <button class="link" id="driftAction" type="button">去刷新</button>
+  </div>
+
+  <div class="speed" id="speedRow" hidden>
+    <span class="speed__tag">⚡ 智能模式</span>
+    <span class="speed__text" id="speedText"></span>
+  </div>
+
+  <div class="pagecheck" id="pageCheck">
+    <span class="pagecheck__dot" id="pageDot"></span>
+    <span class="pagecheck__text" id="pageText">正在检查当前页面…</span>
+  </div>
+
+  <section class="field">
+    <label class="field__label" for="lang">目标语言</label>
+    <select class="field__control" id="lang"></select>
+  </section>
+
+  <section class="quick" id="quickBox">
+    <div class="quick__head">
+      <span class="quick__title">快捷翻译</span>
+      <span class="quick__kbd">Ctrl + Enter</span>
+    </div>
+    <textarea
+      class="quick__input"
+      id="quickInput"
+      rows="2"
+      spellcheck="false"
+      placeholder="在这里输入或粘贴内容…"
+    ></textarea>
+    <div class="quick__actions">
+      <button class="btn btn--primary btn--sm" id="quickGo" type="button">翻译</button>
+      <button class="btn btn--sm" id="quickCopy" type="button" hidden>复制译文</button>
+      <span class="quick__status" id="quickStatus"></span>
+    </div>
+    <div class="quick__output" id="quickOutput" hidden></div>
+  </section>
+
+  <p class="hint" id="hint">
+    在任意输入框输入中文，<b>连敲 3 次空格</b>即可翻译并替换。
+  </p>
+
+  <footer class="foot">
+    <button class="btn" id="openOptions">打开设置</button>
+    <button class="btn btn--primary" id="getKey">获取免费 API Key</button>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

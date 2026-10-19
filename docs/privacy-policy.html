@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策 · 顺手翻译</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1c1c1e;
+    --muted: #6b6b70;
+    --line: #e5e5ea;
+    --accent: #2f6bff;
+    --code-bg: #f4f4f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131316;
+      --fg: #e8e8ea;
+      --muted: #9a9aa1;
+      --line: #2a2a30;
+      --accent: #7aa2ff;
+      --code-bg: #1d1d22;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 56px 24px 96px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.75 -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 30px; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.02em; }
+  h2 { font-size: 19px; margin: 40px 0 12px; letter-spacing: -0.01em; }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  p, li { color: var(--fg); }
+  .meta { color: var(--muted); font-size: 14px; margin: 0 0 40px; }
+  .lede {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 16px;
+    margin: 0 0 8px;
+    color: var(--fg);
+  }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+  code {
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 600; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 48px 0; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 48px; }
+</style>
+</head>
+<body>
+<main>
+
+  <h1>隐私政策</h1>
+  <p class="meta">适用于浏览器扩展「顺手翻译」（Chrome 扩展 ID：<code>__EXTENSION_ID__</code>）<br>生效日期：2026 年 10 月 19 日</p>
+
+  <p class="lede"><strong>一句话总结：</strong>开发者没有服务器，也不收集任何数据。所有内容只存在你自己的电脑上，只发送给你自己配置的翻译服务商。</p>
+
+  <h2>1. 这个扩展做什么</h2>
+  <p>「顺手翻译」是一个输入框翻译工具。你在任意网页的输入框里输入文字，连敲三次空格，它会把你刚输入的那段文字翻译成目标语言，并替换回输入框。</p>
+  <p>为了完成这件事，它必须读取<strong>你主动触发翻译的那一段文字</strong>。它不会读取页面上其他内容，不会记录你的浏览历史，也不会在后台自动翻译任何东西。</p>
+
+  <h2>2. 会处理哪些数据</h2>
+  <table>
+    <thead>
+      <tr><th>数据</th><th>什么时候</th><th>去哪</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>输入框中的文字</strong></td>
+        <td>仅在你连敲三次空格、主动触发翻译时</td>
+        <td>发送给你启用的翻译服务商（见第 3 节），用于取回译文</td>
+      </tr>
+      <tr>
+        <td><strong>API Key</strong></td>
+        <td>你在设置页填写时</td>
+        <td>只保存在本机 <code>chrome.storage.local</code>；只在调用对应服务商时随请求发出</td>
+      </tr>
+      <tr>
+        <td><strong>设置项</strong><br>（目标语言、语气、黑名单网址、开关状态）</td>
+        <td>你修改设置时</td>
+        <td>只保存在本机 <code>chrome.storage.local</code></td>
+      </tr>
+      <tr>
+        <td><strong>翻译缓存</strong></td>
+        <td>每次翻译成功后</td>
+        <td>只保存在本机，用于同一句话再次出现时直接命中</td>
+      </tr>
+      <tr>
+        <td><strong>接口延迟统计</strong></td>
+        <td>每次翻译后</td>
+        <td>只保存在本机，用于自动挑选最快的那家服务商</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>扩展<strong>不</strong>收集：姓名、邮箱、账号、位置、设备标识、浏览历史、剪贴板内容、页面上的其他文字。</p>
+
+  <h2>3. 数据会发送给谁</h2>
+  <p>译文必须由翻译服务生成，所以触发翻译时，那一段文字会被发送到下面某一个地址。具体发往哪一家，取决于你在设置页启用了哪些服务：</p>
+  <ul>
+    <li><strong>谷歌翻译接口</strong>（<code>translate.googleapis.com</code>）—— 默认启用，无需配置。受 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 隐私政策</a> 约束。</li>
+    <li><strong>Groq</strong>（<code>api.groq.com</code>）—— 需你自己申请 Key。受 <a href="https://groq.com/privacy-policy/" target="_blank" rel="noopener">Groq 隐私政策</a> 约束。</li>
+    <li><strong>智谱 AI</strong>（<code>open.bigmodel.cn</code>）—— 需你自己申请 Key。受 <a href="https://open.bigmodel.cn/dev/howuse/policy" target="_blank" rel="noopener">智谱隐私政策</a> 约束。</li>
+    <li><strong>Agnes AI</strong>（<code>apihub.agnes-ai.com</code>）—— 需你自己申请 Key。受该服务商隐私政策约束。</li>
+    <li><strong>你自己添加的自定义服务</strong> —— 地址由你填写，数据发往你指定的那个地址。</li>
+  </ul>
+  <p>除上述翻译请求外，扩展<strong>不会</strong>向任何其他服务器发送数据。开发者本人<strong>收不到</strong>你的任何数据 —— 这个扩展没有开发者后端，也没有任何统计上报。</p>
+
+  <h2>4. 数据保存多久</h2>
+  <ul>
+    <li>设置与 API Key：一直保存在本机，直到你在设置页删除、或卸载扩展。</li>
+    <li>翻译缓存：默认保存 30 天，可在设置页一键清空，也可直接关闭缓存功能。</li>
+    <li>延迟统计：保存在本机，可在设置页点「重新学习」清零。</li>
+  </ul>
+  <p>卸载扩展会一并删除上述所有本地数据。</p>
+
+  <h2>5. 我们不会做的事</h2>
+  <ul>
+    <li>不出售、不出租、不交易你的任何数据。</li>
+    <li>不把数据用于与翻译无关的目的。</li>
+    <li>不把数据用于判断信用度、放贷等用途。</li>
+    <li>不投放广告，不注入推广链接，不修改页面上的任何其他内容。</li>
+    <li>不加载远程代码 —— 扩展的全部代码都打包在安装包里，符合 Chrome 应用商店对 Manifest V3 的要求。</li>
+  </ul>
+
+  <h2>6. 你的控制权</h2>
+  <ul>
+    <li><strong>随时关闭</strong>：在设置页关闭对应服务商的开关，或把某个网站加入黑名单，该网站就不会触发翻译。</li>
+    <li><strong>随时清空</strong>：设置页提供「清空缓存」和「重新学习」按钮。</li>
+    <li><strong>随时删除</strong>：卸载扩展即可清除全部本地数据。</li>
+  </ul>
+
+  <h2>7. 儿童隐私</h2>
+  <p>本扩展不面向 13 岁以下儿童，也不会有意收集儿童的个人信息。</p>
+
+  <h2>8. 政策变更</h2>
+  <p>如果本政策发生实质性变更，会更新本页顶部的生效日期，并在扩展更新说明中注明。</p>
+
+  <h2>9. 联系方式</h2>
+  <p>对本政策有疑问，可发邮件至：<a href="mailto:__CONTACT_EMAIL__">__CONTACT_EMAIL__</a></p>
+
+  <hr>
+  <footer>
+    「顺手翻译」是独立开发的浏览器扩展，与 Google、Groq、智谱 AI、Agnes AI 均无隶属关系。
+    上述服务商的名称与商标归各自所有者所有。
+  </footer>
+
+</main>
+</body>
+</html>

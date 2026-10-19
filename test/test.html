@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>顺手翻译 · 测试页</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 20px 80px;
+      background: #f4f5f7;
+      color: #1f2328;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 500; margin: 0 0 6px; }
+    .lead { color: #6b7280; font-size: 13px; margin: 0 0 28px; }
+    .lead kbd {
+      display: inline-block; padding: 1px 6px; margin: 0 2px;
+      border: 1px solid rgba(15,23,42,.22); border-bottom-width: 2px;
+      border-radius: 5px; background: #fff; font-size: 12px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+    section {
+      background: #fff; border: 1px solid rgba(15,23,42,.12);
+      border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;
+    }
+    h2 { font-size: 13px; font-weight: 500; margin: 0 0 10px; color: #1f2328; }
+    h2 span { color: #9aa1ab; font-weight: 400; margin-left: 6px; font-size: 12px; }
+    input, textarea, .editor {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid rgba(15,23,42,.22); border-radius: 8px;
+      background: #fff; color: #1f2328;
+      font-family: inherit; font-size: 14px;
+    }
+    input:focus, textarea:focus, .editor:focus {
+      outline: none; border-color: #185fa5; box-shadow: 0 0 0 3px rgba(24,95,165,.12);
+    }
+    textarea { resize: vertical; }
+    .editor { min-height: 76px; }
+    .hint { font-size: 12px; color: #9aa1ab; margin: 8px 0 0; }
+    .tip {
+      background: #e6f1fb; border: 1px solid #b5d4f4; color: #0c447c;
+      border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 24px;
+    }
+    .tip b { font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>顺手翻译 · 测试页</h1>
+    <p class="lead">在下面任意输入框里输入中文，然后快速连敲三次空格。</p>
+
+    <div class="tip">
+      <b>触发方式：</b>输入中文 → 连敲 <kbd>空格</kbd><kbd>空格</kbd><kbd>空格</kbd>（默认需在 500 毫秒内完成）。<br />
+      触发后最后一次空格会被拦截，输入框内容整体替换为译文。
+    </div>
+
+    <section>
+      <h2>1. 单行输入框 <span>&lt;input type="text"&gt;</span></h2>
+      <input type="text" id="t1" placeholder="在这里输入中文，然后连敲三次空格" />
+    </section>
+
+    <section>
+      <h2>2. 多行文本域 <span>&lt;textarea&gt;</span></h2>
+      <textarea id="t2" rows="4" placeholder="在这里输入中文，然后连敲三次空格"></textarea>
+    </section>
+
+    <section>
+      <h2>3. 富文本编辑器 <span>contenteditable</span></h2>
+      <div class="editor" id="t3" contenteditable="true" data-placeholder="在这里输入中文，然后连敲三次空格"></div>
+      <p class="hint">译文通过 execCommand 写回，撤销栈会保留，可以 Ctrl+Z 撤销。</p>
+    </section>
+
+    <section>
+      <h2>4. 模拟受控组件 <span>验证 React / Vue 回填路径</span></h2>
+      <input type="text" id="t4" placeholder="在这里输入中文，然后连敲三次空格" />
+      <p class="hint">
+        这个输入框监听了 input 事件并把值同步回内部状态（模拟 React 受控组件）。
+        如果译文能正常写入，说明原生 value setter 方案生效。
+      </p>
+    </section>
+
+    <section>
+      <h2>5. 当前配置</h2>
+      <p class="hint" id="configView">读取中…</p>
+    </section>
+  </div>
+
+  <script>
+    // 模拟受控组件：input 事件里把值回写到「状态」
+    (function () {
+      const el = document.getElementById('t4');
+      let state = '';
+      el.addEventListener('input', function () {
+        state = el.value;
+      });
+      el.addEventListener('blur', function () {
+        el.value = state;
+      });
+    })();
+
+    // 展示当前插件配置，方便排查
+    (function () {
+      const view = document.getElementById('configView');
+      if (!window.chrome || !chrome.storage || !chrome.storage.local) {
+        view.textContent = '当前不是扩展环境，读不到配置（但输入框仍可测试）。';
+        return;
+      }
+      chrome.storage.local.get(
+        ['enabled', 'apiKey', 'targetLang', 'triggerCount', 'triggerWindow', 'blacklist'],
+        function (s) {
+          const keyState = s.apiKey ? '已配置' : '未配置（请先到设置页填写）';
+          view.innerHTML =
+            '启用状态：' + (s.enabled === false ? '已停用' : '已启用') + '<br />' +
+            'API Key：' + keyState + '<br />' +
+            '目标语言：' + (s.targetLang || 'en') + '<br />' +
+            '触发：连敲 ' + (s.triggerCount || 3) + ' 次空格，窗口 ' + (s.triggerWindow || 500) + ' 毫秒<br />' +
+            '黑名单：' + ((s.blacklist && s.blacklist.length) ? s.blacklist.join('、') : '无');
+        }
+      );
+    })();
+  </script>
+</body>
+</html>

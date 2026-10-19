@@ -1,0 +1,548 @@
+/* ============================================================================
+   设计令牌 —— 与 options.css 同一套命名，两处界面看起来才像一个产品。
+   参考 wandb/openui：颜色只以语义令牌出现，暗色模式只需重声明一遍同名令牌。
+   ============================================================================ */
+
+:root {
+  color-scheme: light;
+
+  /* ---- 圆角 ---- */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-pill: 999px;
+
+  /* ---- 中性色 ---- */
+  --bg: #ffffff;
+  --bg-soft: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1f2328;
+  --text-mute: #6b7280;
+  --text-faint: #9aa1ab;
+  --border: rgba(15, 23, 42, 0.12);
+  --border-strong: rgba(15, 23, 42, 0.22);
+
+  /* ---- 品牌主色 ---- */
+  --blue: #185fa5;
+  --blue-soft: #e6f1fb;
+  --blue-border: #b5d4f4;
+  --blue-soft-hover: #d8e9fa;
+  --focus-ring: rgba(24, 95, 165, 0.16);
+  --on-accent: #ffffff;
+
+  /* ---- 语义色 ---- */
+  --green: #1f6b33;
+  --green-soft: #edf7ed;
+  --red: #a32626;
+  --red-soft: #fdeeee;
+  --amber: #7a5c12;
+  --amber-soft: #fdf6e3;
+  --amber-border: #e8cf9a;
+
+  /* ---- 控件 ---- */
+  --switch-off: #cfd4da;
+  --knob: #ffffff;
+
+  /* ---- 自检状态点 ---- */
+  --dot-idle: #c2c7ce;
+  --dot-ok: #2e9e5b;
+  --dot-warn: #d99a1f;
+  --dot-err: #d64545;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --bg: #1b1e24;
+    --bg-soft: #22262e;
+    --surface: #22262e;
+    --text: #e6e8ec;
+    --text-mute: #9aa3b2;
+    --text-faint: #6f7787;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+
+    --blue: #6cb0f5;
+    --blue-soft: rgba(108, 176, 245, 0.14);
+    --blue-border: rgba(108, 176, 245, 0.34);
+    --blue-soft-hover: rgba(108, 176, 245, 0.24);
+    --focus-ring: rgba(108, 176, 245, 0.3);
+    --on-accent: #16181d;
+
+    --green: #6ed88f;
+    --green-soft: rgba(110, 216, 143, 0.14);
+    --red: #f28b8b;
+    --red-soft: rgba(242, 139, 139, 0.14);
+    --amber: #e3b95f;
+    --amber-soft: rgba(227, 185, 95, 0.14);
+    --amber-border: rgba(227, 185, 95, 0.32);
+
+    --switch-off: #3a4150;
+    --knob: #e6e8ec;
+
+    --dot-idle: #4a5261;
+    --dot-ok: #6ed88f;
+    --dot-warn: #e3b95f;
+    --dot-err: #f28b8b;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* 作者样式里的 display 会盖掉 UA 的 [hidden]{display:none}，这里显式兜底 */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  width: 300px;
+  margin: 0;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.brand__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-md);
+  flex: 0 0 auto;
+}
+
+.brand__text {
+  min-width: 0;
+}
+
+.brand__name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.brand__sub {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--text-mute);
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch__track {
+  width: 36px;
+  height: 20px;
+  border-radius: var(--r-pill);
+  background: var(--switch-off);
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.switch__track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .switch__track {
+  background: var(--blue);
+}
+
+.switch input:checked + .switch__track::after {
+  transform: translateX(16px);
+}
+
+.switch input:focus-visible + .switch__track {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.status--ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.status--warn {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+/* 版本不一致：后台还在跑旧代码。比 status--warn 多一圈边框，因为它更急 */
+.drift {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border-radius: var(--r-md);
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-border);
+  color: var(--amber);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* 弹窗窄，按钮不许被文字挤成两行 */
+.drift .link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  margin: -4px 0 12px;
+  border-radius: var(--r-md);
+  background: var(--blue-soft);
+  border: 1px solid var(--blue-border);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.speed__tag {
+  color: var(--blue);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.speed__text {
+  color: var(--text-mute);
+}
+
+.pagecheck {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  margin-bottom: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  background: var(--bg-soft);
+  color: var(--text-mute);
+}
+
+.pagecheck__dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dot-idle);
+}
+
+.pagecheck--ok .pagecheck__dot {
+  background: var(--dot-ok);
+}
+
+.pagecheck--warn .pagecheck__dot {
+  background: var(--dot-warn);
+}
+
+.pagecheck--err .pagecheck__dot {
+  background: var(--dot-err);
+}
+
+.pagecheck--ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.pagecheck--warn {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.pagecheck--err {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field__label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-bottom: 5px;
+}
+
+.field__control {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.field__control:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+/* ------------------------------ 快捷翻译 ------------------------------ */
+
+.quick {
+  margin-bottom: 12px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 当前页面无法注入时，把这个框高亮出来 */
+.quick--focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.quick__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.quick__title {
+  font-size: 11px;
+  color: var(--text-mute);
+}
+
+.quick__kbd {
+  font-size: 10px;
+  color: var(--text-faint);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-soft);
+}
+
+.quick__input,
+.quick__output {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12.5px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.quick__input {
+  min-height: 46px;
+  max-height: 140px;
+}
+
+.quick__input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.quick__output {
+  margin-top: 8px;
+  background: var(--blue-soft);
+  border-color: var(--blue-border);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 160px;
+  overflow-y: auto;
+  user-select: text;
+}
+
+.quick__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+}
+
+.quick__actions .btn {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.quick__status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+.quick__status--ok {
+  color: var(--green);
+}
+
+.quick__status--err {
+  color: var(--red);
+}
+
+.hint {
+  margin: 0 0 14px;
+  padding: 9px 10px;
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  font-size: 11.5px;
+  color: var(--text-mute);
+  line-height: 1.55;
+}
+
+.hint b {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.foot {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.btn:hover {
+  background: var(--bg-soft);
+}
+
+.btn--primary {
+  background: var(--blue-soft);
+  border-color: var(--blue-border);
+  color: var(--blue);
+  font-weight: 500;
+}
+
+.btn--primary:hover {
+  background: var(--blue-soft-hover);
+}
+
+.btn--sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.link {
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ============================================================================
+   交互打磨（与 options.css 保持一致）
+   ============================================================================ */
+
+/* 键盘可达性：只在键盘 Tab 到的时候出现 */
+.btn:focus-visible,
+.field__control:focus-visible,
+.quick__input:focus-visible,
+.quick__output:focus-visible,
+.link:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.btn {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0.5px);
+}
+
+.quick--focus {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
