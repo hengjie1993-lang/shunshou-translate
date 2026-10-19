@@ -150,9 +150,14 @@ ok('已废弃的 smartOrder 开关被清掉', !('smartOrder' in store), Object.k
 console.log('\n=== 2. 全新安装 ===');
 store = {};
 const fresh = await ensureDefaults();
-ok('默认带一个 Agnes 服务商', fresh.providers.length === 1 && fresh.providers[0].name === 'Agnes AI', fresh.providers);
+ok('新装不预置任何服务商（不替用户选，也不夹带推广）', Array.isArray(fresh.providers) && fresh.providers.length === 0, fresh.providers);
 ok('默认缓存开启', fresh.cacheEnabled === true);
 ok('配置里不再有智能排序开关（常开）', !('smartOrder' in fresh), Object.keys(fresh));
+
+// 用户把服务商全删了是合法状态：读配置不能偷偷塞回一个
+store = { providers: [] };
+const emptied = await ensureDefaults();
+ok('删光服务商后不会被重新塞回默认值', emptied.providers.length === 0, emptied.providers);
 
 /* ----------------------------- 3. 可用性过滤 ----------------------------- */
 

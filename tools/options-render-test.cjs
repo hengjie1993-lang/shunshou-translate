@@ -103,6 +103,9 @@ function serve(root) {
         p3: { emaMs: 2800, samples: 5, fails: 2, failStreak: 1, cooldownUntil: Date.now() + 30000, lastOkAt: Date.now(), lastCode: 'rate_limit', probedAt: Date.now(), updatedAt: Date.now() }
       }
     };
+    // 允许按场景覆盖服务商列表（全新安装 / 只加不填 Key 两种边界）
+    if (Array.isArray(o.providers)) store.providers = o.providers;
+
     const pick = (keys) => {
       if (keys == null) return { ...store };
       const list = Array.isArray(keys) ? keys : Object.keys(keys);
@@ -374,6 +377,58 @@ function serve(root) {
   );
   if (darkErrors.length) problems.push('暗色页面报错: ' + darkErrors.join(' | '));
   await darkCtx.close();
+
+  /* ---- 全新安装：不预置服务商，也不能把「没配 AI」说成故障 ---- */
+  // 必须开新 context：mock 的 store 是每次导航重新建的，在旧页面上改完再 reload 会被重置
+  const freshCtx = await browser.newContext();
+  await freshCtx.addInitScript(MOCK_CHROME, { providers: [] });
+  const freshPage = await freshCtx.newPage();
+  await freshPage.goto(`http://127.0.0.1:${port}/options/options.html`, { waitUntil: 'load' });
+  await freshPage.waitForTimeout(600);
+  const fresh = await freshPage.evaluate(() => ({
+    cards: document.querySelectorAll('#providers .provider').length,
+    empty: document.querySelector('.providers__empty')?.textContent.trim() || '',
+    bannerVisible: (() => {
+      const b = document.getElementById('banner');
+      return !!b && getComputedStyle(b).display !== 'none';
+    })(),
+    smart: document.getElementById('smartDesc')?.textContent.trim() || ''
+  }));
+  console.log('全新安装:', `服务商卡片 ${fresh.cards} 张`, '| 空状态:', fresh.empty, '| 顶部横幅:', fresh.bannerVisible ? '显示' : '隐藏');
+  if (fresh.cards !== 0) problems.push('全新安装不应预置任何服务商（不替用户选、也不夹带推广），实际 ' + fresh.cards + ' 张');
+  if (!fresh.empty) problems.push('没有服务商时应显示空状态引导');
+  if (fresh.bannerVisible) problems.push('一个服务商都没有时，AI 卡片里已经说清楚了，顶部横幅属于重复噪音，应隐藏');
+  if (!/免费引擎/.test(fresh.smart)) problems.push('没配服务商时，智能模式说明应点明免费引擎够用，实际: ' + fresh.smart);
+  await freshCtx.close();
+
+  /* ---- 加了服务商却没填 Key：这才是真卡住，顶部必须提醒 ---- */
+  const noKeyCtx = await browser.newContext();
+  await noKeyCtx.addInitScript(MOCK_CHROME, {
+    providers: [
+      {
+        id: 'x1',
+        name: 'Groq',
+        endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+        model: 'openai/gpt-oss-120b',
+        apiKey: '',
+        enabled: true
+      }
+    ]
+  });
+  const noKeyPage = await noKeyCtx.newPage();
+  await noKeyPage.goto(`http://127.0.0.1:${port}/options/options.html`, { waitUntil: 'load' });
+  await noKeyPage.waitForTimeout(600);
+  const noKey = await noKeyPage.evaluate(() => {
+    const b = document.getElementById('banner');
+    return {
+      bannerVisible: !!b && getComputedStyle(b).display !== 'none',
+      title: b?.querySelector('.banner__title')?.textContent.trim() || ''
+    };
+  });
+  console.log('服务商未填 Key:', noKey.bannerVisible ? `已提醒 ✓ (${noKey.title})` : '未提醒 ✗');
+  if (!noKey.bannerVisible) problems.push('加了服务商但没填 Key 时，顶部应提醒（否则用户不知道它没生效）');
+  if (!/Key/.test(noKey.title)) problems.push('未填 Key 的提醒标题应点明是 Key 的问题，实际: ' + noKey.title);
+  await noKeyCtx.close();
 
   if (errors.length) problems.push('页面报错: ' + errors.join(' | '));
 

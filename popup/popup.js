@@ -1,9 +1,8 @@
 import { LANGUAGES } from '../lib/translator.js';
 import { usableProviders } from '../lib/providers.js';
 import { orderBySpeed, describeStat } from '../lib/stats.js';
+import { DEFAULT_SETTINGS } from '../lib/settings.js';
 import { checkVersionDrift, runningVersionOf } from '../lib/versionGuard.js';
-
-const SIGNUP_URL = 'https://agnes-ai.com/';
 
 const els = {
   enabled: document.getElementById('enabled'),
@@ -49,9 +48,11 @@ function fillLanguages(selected) {
   }
 }
 
-function renderProviderStatus(providers) {
+function renderProviderStatus(providers, engines) {
   const list = Array.isArray(providers) ? providers : [];
   const usable = usableProviders(list).length;
+  // 免费引擎能翻，就不该把「没配 AI 服务商」说成故障 —— 那是可选增强，不是缺配置
+  const freeOk = !!(engines && (engines.google || engines.local));
 
   els.keyStatus.hidden = false;
 
@@ -61,6 +62,11 @@ function renderProviderStatus(providers) {
       list.length > 1 ? `${usable} / ${list.length} 家服务可用` : `${list[0].name} 已配置`;
     els.keyStatusAction.hidden = true;
     els.statusText.textContent = '已就绪 · ' + runningVersion();
+  } else if (freeOk) {
+    els.keyStatus.className = 'status status--ok';
+    els.keyStatusText.textContent = '免费引擎已就绪，不配 AI 服务也能翻译';
+    els.keyStatusAction.hidden = true;
+    els.statusText.textContent = '已就绪 · ' + runningVersion();
   } else {
     els.keyStatus.className = 'status status--warn';
     els.keyStatusText.textContent = '还没有可用的翻译服务';
@@ -68,6 +74,9 @@ function renderProviderStatus(providers) {
     els.keyStatusAction.textContent = '去设置';
     els.statusText.textContent = '未配置 · ' + runningVersion();
   }
+
+  // 已经配好服务商时，不再劝他去加 —— 按钮收起来，让「打开设置」占满整行
+  els.getKey.hidden = usable > 0;
 }
 
 /**
@@ -257,12 +266,16 @@ async function init() {
     'providers',
     'providerStats',
     'targetLang',
-    'triggerCount'
+    'triggerCount',
+    'engines'
   ]);
 
   els.enabled.checked = stored.enabled !== false;
   fillLanguages(stored.targetLang || 'en');
-  renderProviderStatus(stored.providers);
+  // 全新安装时 storage 里还没有 engines 这个键 —— 用默认值兜底，
+  // 否则会把「谷歌免费通道默认开着」误判成「什么都没配」
+  const engines = { ...DEFAULT_SETTINGS.engines, ...(stored.engines || {}) };
+  renderProviderStatus(stored.providers, engines);
   renderSpeed(stored.providers, stored.providerStats);
 
   const times = stored.triggerCount || 3;
@@ -284,11 +297,15 @@ els.openOptions.addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
 });
 
-function openSignup() {
-  chrome.tabs.create({ url: SIGNUP_URL });
+/**
+ * 「添加 AI 服务商」按钮：只打开设置页，不替用户跳某一家官网。
+ * 设置页里 Groq / 智谱 / Agnes 三家并列，各自带申请入口，选哪家是用户的事。
+ */
+function openProviderSetup() {
+  chrome.runtime.openOptionsPage();
 }
 
-els.getKey.addEventListener('click', openSignup);
+els.getKey.addEventListener('click', openProviderSetup);
 els.keyStatusAction.addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
 });

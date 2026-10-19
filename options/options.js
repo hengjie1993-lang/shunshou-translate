@@ -264,7 +264,10 @@ function flashSmart(text, kind) {
 }
 
 function renderBanner() {
-  els.banner.hidden = hasUsableProvider();
+  // 一个服务商都没有时，AI 卡片里的空状态 + 「可选 · 不填也能用」的提示已经说清楚了，
+  // 顶部再喊一遍只是噪音。只有「加了服务商却没填 Key」才是真卡住，值得在顶部提醒。
+  const list = state.providers || [];
+  els.banner.hidden = hasUsableProvider() || list.length === 0;
 }
 
 /* --------------------------------- 版本自检 --------------------------------- */
